@@ -15,11 +15,21 @@ and open the template in the editor.
         <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
         <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.js"></script>
+        <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
+        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/javascript/javascript.js"></script>
+        <style>
+            .editor {
+                border-left: thick solid blue
+            }
+        </style>
+            
         <script>
             $(function() {
+                
+                var codeEditor = CodeMirror($("#codeEditor")[0]);
                 var run = function() {
                     var sourceURI = $("#sourceURI").val()
-                    alert("go: "+sourceURI);
                     var store = new LdpStore({
                         parsers: new LdpStore.ParserUtil({
                             'text/turtle': LdpStore.parsers.findParsers("text/turtle")[0],
@@ -38,7 +48,7 @@ and open the template in the editor.
                             } else {
                                 console.log("Got graph of size "+g.length+" from "+sourceURI);
                             }
-                            var code = $("#code").val()
+                            var code = codeEditor.getValue();
                             eval(code);
                     });
                 };
@@ -60,8 +70,7 @@ and open the template in the editor.
         <div>
             Act on the data available as graph object <code>g</code>;
         </div>
-        <textarea id="code">      
-        </textarea>
+        <div id="codeEditor" class="editor"></div>
         <div>TODO write content</div>
         <button id="run">Run</button>
     </body>
