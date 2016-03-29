@@ -6,12 +6,63 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>LodIDE</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+        <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
+        <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+        <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
+        <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+        <script>
+            $(function() {
+                var run = function() {
+                    var sourceURI = $("#sourceURI").val()
+                    alert("go: "+sourceURI);
+                    var store = new LdpStore({
+                        parsers: new LdpStore.ParserUtil({
+                            'text/turtle': LdpStore.parsers.findParsers("text/turtle")[0],
+                            'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
+                            'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
+                        })
+                    });
+                    store.match(
+                        null,
+                        null,
+                        null,
+                        sourceURI,
+                        function (error, g) {
+                            if (!g) {
+                                console.warn("Couldn't get any triple from "+sourceURI+". reason: "+error);
+                            } else {
+                                console.log("Got graph of size "+g.length+" from "+sourceURI);
+                            }
+                            var code = $("#code").val()
+                            eval(code);
+                    });
+                };
+                $("#run").on("click", run);
+            });
+        </script>
     </head>
     <body>
+        <header>
+            <h1>LodIDE: Use Linked Open data!</h1>
+            <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
+        </header>
+        <h2>Data source</h2>
+        <div>
+            Specify the URL from which to retrieve the RDF data:
+            <input id="sourceURI" type="text" size="80" value="http://classifications.data.admin.ch/municipality/371" />
+        </div>
+        <h2>Data Processing</h2>
+        <div>
+            Act on the data available as graph object <code>g</code>;
+        </div>
+        <textarea id="code">      
+        </textarea>
         <div>TODO write content</div>
+        <button id="run">Run</button>
     </body>
 </html>
