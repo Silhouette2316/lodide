@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 
 var app = express();
-app.listen(3000);
+// app.listen(3000);
 
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
