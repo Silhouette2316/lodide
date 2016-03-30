@@ -18,6 +18,7 @@ and open the template in the editor.
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.js"></script>
         <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/javascript/javascript.js"></script>
+        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/turtle/turtle.js"></script>
         <style>
             .editor {
                 border-left: thick solid blue
@@ -27,12 +28,20 @@ and open the template in the editor.
         <script>
             $(function() {
                 
-                var codeEditor = CodeMirror($("#codeEditor")[0]);
+                var codeEditor = CodeMirror($("#codeEditor")[0], {
+                    mode: "javascript"
+                });
+                codeEditor.setValue($("#script").text().trim());
+                var matchersEditor = CodeMirror($("#matchersEditor")[0], {
+                    mode: "turtle"
+                });
+                matchersEditor.setValue($("#matchers").text().trim());
                 var run = function() {
-                    var sourceURI = $("#sourceURI").val()
+                    var sourceURI = $("#sourceURI").val();
+                    var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
                     var store = new LdpStore({
                         parsers: new LdpStore.ParserUtil({
-                            'text/turtle': LdpStore.parsers.findParsers("text/turtle")[0],
+                            'text/turtle': turtleParser,
                             'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
                             'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
                         })
@@ -50,6 +59,13 @@ and open the template in the editor.
                             }
                             var code = codeEditor.getValue();
                             eval(code);
+                            var resource = rdf.createNamedNode($("#resource").val());
+                            var matchersTurtle = matchersEditor.getValue();
+                            turtleParser.parse(matchersTurtle).then(function (matchers) {
+                                var renderingResult = new RDF2h(matchers).render(
+                                        g, resource);
+                                $("#result").html(renderingResult);
+                            });
                     });
                 };
                 $("#run").on("click", run);
@@ -64,14 +80,80 @@ and open the template in the editor.
         <h2>Data source</h2>
         <div>
             Specify the URL from which to retrieve the RDF data:
-            <input id="sourceURI" type="text" size="80" value="http://classifications.data.admin.ch/municipality/371" />
+            <input id="sourceURI" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card.rdf" />
         </div>
         <h2>Data Processing</h2>
         <div>
             Act on the data available as graph object <code>g</code>;
         </div>
         <div id="codeEditor" class="editor"></div>
-        <div>TODO write content</div>
+        <h2>Data Rendering</h2>
+        <div>Render a resource using RDF2h matchers.</div>
+        <div>Resource: <input id="resource" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card#i" /></div>
+        <div>Template:</div>
+        <div id="matchersEditor" class="editor"></div>
         <button id="run">Run</button>
+        <div id="result"></div>
+        <script id="script" type="example/js">
+function replacePredicate(original, replacement) {
+  g.forEach(function(t) {
+    if (t.predicate.equals(original)) {
+      g.remove(t);
+      g.add(rdf.createTriple(t.subject, replacement, t.object));
+    }
+  });
+}
+function replaceObject(original, replacement) {
+  g.forEach(function(t) {
+    if (t.object.equals(original)) {
+      g.remove(t);
+      g.add(rdf.createTriple(t.subject, t.predicate, replacement));
+    }
+  });
+}
+var foafPerson = rdf.createNamedNode(
+  "http://xmlns.com/foaf/0.1/Person");
+var schemaPerson = rdf.createNamedNode(
+  "http://schema.org/Person");
+replaceObject(foafPerson, schemaPerson);
+var foafGivenName = rdf.createNamedNode(
+    "http://xmlns.com/foaf/0.1/givenname");
+var schemaGivenName = rdf.createNamedNode(
+    "http://schema.org/givenName");
+replacePredicate(foafGivenName, schemaGivenName);
+        </script>
+        <script id="matchers" type="text/turtle">
+@base <http://styles.example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+@prefix s: <http://schema.org/> .
+
+[ a r2h:Matcher ;
+  r2h:triplePattern [
+    r2h:subject r2h:this;
+    r2h:predicate rdf:type;
+    r2h:object s:Person
+  ];
+  r2h:template [ 
+    r2h:context r2h:Default;
+    r2h:mustache '''
+<h1>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</h1>
+{{#+s:knows}}
+  <h2>Knows</h2>
+  <ul>
+  {{#s:knows}}
+    {{#+s:givenName}}
+    <li>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</li>
+    {{/+s:givenName}}
+    {{^+s:givenName}}
+    <li>{{.}}</li>
+    {{/+s:givenName}}                            
+  {{/s:knows}}                             
+  </ul>                         
+{{/+s:knows}} 
+    '''
+  ]
+].
+        </script>
     </body>
 </html>
