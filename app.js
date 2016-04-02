@@ -4,8 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 
 var app = express();
-app.listen(5000);
-
+app.set('port', process.env.PORT || 3000);
+app.listen(app.get('port'),
+  function(){
+    console.log("Express server listening on port " + app.get('port'));
+});
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
 
