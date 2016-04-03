@@ -10,6 +10,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+        <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
         <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -91,10 +92,20 @@ and open the template in the editor.
     <body>
         <div id="content">
             <header>
-                <img src="images/edulod.png" width="100" alt="EDULOD Logo" />
-                <h1>LodIDE: Use Linked Open data!</h1>
+                <div id="header" class="col-sm-12">
+                    <h4><a class="brand" href="http://edulod.github.io/"><img id="logo" src="images/edulod-square.png" alt="EDULOD Logo"> EDULOD</a>
+                        <small>LodIDE: Use Linked Open data!</small>
+                    </h4>
+
+                </div>
                 <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
             </header>
+            <div class="intro">
+            <h2>First exercise</h2>
+            <p>This is the first and for now the only LodIDE exercise, more 
+                exercises will come soon. <br/>
+                In his exercise you will manipulate and render RDF data in your browser.</p>
+            </div>
             <h2>Data source</h2>
             <div class="exercise">
                 <ul>
@@ -169,6 +180,14 @@ and open the template in the editor.
             <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
             <div>RDF2h matchers:</div>
             <div id="matchersEditor" class="editor"></div>
+            <div class="exercise">
+                <ul>
+                    <li>When you're finished press the "Run my code"-button.
+                    The results will show up below the button.
+                    If you did everything right you should see at least Tim 
+                    Berner's Lee first name.</li>
+                </ul>
+            </div>
             <button id="run">Run my code</button>
             <div id="result"></div>
         </div>

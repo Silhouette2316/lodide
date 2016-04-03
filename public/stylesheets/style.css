@@ -16,8 +16,11 @@ a {
 
 .exercise {
     background-color: lightgreen;
-    margin-left: 1cm;
-    margin-right: 1cm;
+    margin: 0.5em 0em;
+    padding: 0.1em;
+}
+.exercise button {
+    margin: 0 2em;
 }
 
 #run {
@@ -33,5 +36,16 @@ a {
 }
 
 .editor {
-    border-left: thick solid blue
+    border: thin solid blue;
+    border-left: thick solid blue;
+}
+
+#logo {
+    width: 4em;
+    height: 4em;
+}
+
+#header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
 }
