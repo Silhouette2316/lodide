@@ -19,3 +19,19 @@ a {
     margin-left: 1cm;
     margin-right: 1cm;
 }
+
+#run {
+    display: table;
+    align-self: center;
+    background-color: #00B7FF;
+    color: black;
+    width: 50em;
+    margin: 1em auto;
+    padding: 1em 2em;
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.editor {
+    border-left: thick solid blue
+}
