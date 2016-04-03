@@ -1,8 +1,21 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  align-content: center;
+}
+#content {
+    display: table;
+    align-self: center;
+    max-width: 80em;
+    margin: 0 auto;
 }
 
 a {
   color: #00B7FF;
+}
+
+.exercise {
+    background-color: lightgreen;
+    margin-left: 1cm;
+    margin-right: 1cm;
 }

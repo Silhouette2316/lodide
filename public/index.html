@@ -73,27 +73,86 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        <header>
-            <h1>LodIDE: Use Linked Open data!</h1>
-            <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
-        </header>
-        <h2>Data source</h2>
-        <div>
-            Specify the URL from which to retrieve the RDF data:
-            <input id="sourceURI" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card.rdf" />
+        <div id="content">
+            <header>
+                <img src="images/edulod.png" width="100" alt="EDULOD Logo" />
+                <h1>LodIDE: Use Linked Open data!</h1>
+                <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
+            </header>
+            <h2>Data source</h2>
+            <div class="exercise">
+                <ul>
+                    <li>As data source specify Tim Berner-Lee's personal profile 
+                        document available at <code>https://www.w3.org/People/Berners-Lee/card.rdf</code></li>
+                </ul>
+            </div>
+            <div>
+                Specify the URL from which to retrieve the RDF data:
+                <input id="sourceURI" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card.rdf" />
+            </div>
+            <h2>Data Processing</h2>
+            <div class="exercise">
+                <ul>
+                    <li>Tim Berner-Lee's profile uses the FOAF ontology, write 
+                        some code to replace FOAF terms with the corresponding 
+                        terms from schema.org.</li>
+                    <li>Replace at least the following:
+                        <ul>
+                            <li><code>http://xmlns.com/foaf/0.1/Person</code> with <code>http://schema.org/Person</code></li>
+                            <li><code>http://xmlns.com/foaf/0.1/givenname</code> with <code>http://schema.org/givenName</code></li>
+                        </ul>
+                    </li>
+                    <li>You'll probably need the following functions:
+                        <ul>
+                            <li><code>forEach(callback)</code> of the 
+                                <code>Graph</code> instance (i.e. the object <code>g</code>)
+                                to access the individual triples,
+                                the <code>callback</code> is a function that gets
+                                a <code>Triple</code> as argument.<br/>
+                                A triple has the following properties:
+                                <ul>
+                                    <li><code>subject</code></li>
+                                    <li><code>predicate</code></li>
+                                    <li><code>object</code></li>
+                                </ul>
+                            </li>
+                            <li><code>remove(triple)</code>: to remove a triple 
+                                from  a graph.</li>
+                            <li><code>createTriple(subject, predicate, object)</code>: 
+                                this is a method of the global <code>rdf</code>
+                                object and is needed to create a <code>Triple</code>.</li>
+                            <li><code>createNamedNode(string)</code>: 
+                                this is also a method of the global <code>rdf</code>
+                                object and is used to create a <em>named node</em>
+                                from the String representation a given 
+                                <em>IRI</em> (URI or URL).</li>
+                            <li><code>equals(other)</code>: This method is used
+                                to check if two objects represent the same node.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                Act on the data available as graph object <code>g</code>;
+            </div>
+            <div id="codeEditor" class="editor"></div>
+            <h2>Data Rendering</h2>
+            <div class="exercise">
+                <ul>
+                    <li>Render the resource <code>https://www.w3.org/People/Berners-Lee/card#i</code></li>
+                    <li>You may use the RDF2h matchers from the 
+                        <a href="http://rdf2h.github.io/rdf2h/index.html#bernadette-sample">Bernadette example</a>
+                        from the <a href="http://rdf2h.github.io/rdf2h/manual.html">RDF2h documentation</a>.
+                   </li>
+                </ul>
+            </div>
+            <div>Render a resource using RDF2h matchers.</div>
+            <div>Resource: <input id="resource" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card#i" /></div>
+            <div>RDF2h matchers:</div>
+            <div id="matchersEditor" class="editor"></div>
+            <button id="run">Run</button>
+            <div id="result"></div>
         </div>
-        <h2>Data Processing</h2>
-        <div>
-            Act on the data available as graph object <code>g</code>;
-        </div>
-        <div id="codeEditor" class="editor"></div>
-        <h2>Data Rendering</h2>
-        <div>Render a resource using RDF2h matchers.</div>
-        <div>Resource: <input id="resource" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card#i" /></div>
-        <div>Template:</div>
-        <div id="matchersEditor" class="editor"></div>
-        <button id="run">Run</button>
-        <div id="result"></div>
         <script id="script" type="example/js">
 function replacePredicate(original, replacement) {
   g.forEach(function(t) {
