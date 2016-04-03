@@ -31,11 +31,9 @@ and open the template in the editor.
                 var codeEditor = CodeMirror($("#codeEditor")[0], {
                     mode: "javascript"
                 });
-                codeEditor.setValue($("#script").text().trim());
                 var matchersEditor = CodeMirror($("#matchersEditor")[0], {
                     mode: "turtle"
                 });
-                matchersEditor.setValue($("#matchers").text().trim());
                 var run = function() {
                     var sourceURI = $("#sourceURI").val();
                     var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
@@ -59,7 +57,7 @@ and open the template in the editor.
                             }
                             var code = codeEditor.getValue();
                             eval(code);
-                            var resource = rdf.createNamedNode($("#resource").val());
+                            var resource = rdf.createNamedNode($("#rendering-resource").val());
                             var matchersTurtle = matchersEditor.getValue();
                             turtleParser.parse(matchersTurtle).then(function (matchers) {
                                 var renderingResult = new RDF2h(matchers).render(
@@ -69,6 +67,30 @@ and open the template in the editor.
                     });
                 };
                 $("#run").on("click", run);
+                $("#sourceURI-solution-button").on("click", function() {
+                    if (confirm("Confirm that you are you too lazy to copy and paste that URI.")) {
+                        $("#sourceURI").val($("#sourceURI-solution").text().trim());
+                    }
+                });
+                $("#codeEditor-solution-button").on("click", function() {
+                    var message = "Confirm that you would like to see the solution.";
+                    if (codeEditor.getValue().trim().length > 0) {
+                        message += "\nWARNING: The code that you've already entered will be gone forever.";
+                    }
+                    if (confirm(message)) {
+                        codeEditor.setValue($("#script").text().trim());
+                    }
+                });
+                $("#rendering-solution-button").on("click", function() {
+                    var message = "Confirm that you would like to see the solution.";
+                    if (matchersEditor.getValue().trim().length > 0) {
+                        message += "\nWARNING: That code that you've already entered will be forever lost.";
+                    }
+                    if (confirm(message)) {
+                        $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
+                        matchersEditor.setValue($("#matchers").text().trim());
+                    }
+                });
             });
         </script>
     </head>
@@ -85,10 +107,11 @@ and open the template in the editor.
                     <li>As data source specify Tim Berner-Lee's personal profile 
                         document available at <code>https://www.w3.org/People/Berners-Lee/card.rdf</code></li>
                 </ul>
+                <button id="sourceURI-solution-button">Show solution</button>
             </div>
             <div>
                 Specify the URL from which to retrieve the RDF data:
-                <input id="sourceURI" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card.rdf" />
+                <input id="sourceURI" type="text" size="80" value="" />
             </div>
             <h2>Data Processing</h2>
             <div class="exercise">
@@ -131,6 +154,7 @@ and open the template in the editor.
                         </ul>
                     </li>
                 </ul>
+                <button id="codeEditor-solution-button">Show solution</button>
             </div>
             <div>
                 Act on the data available as graph object <code>g</code>;
@@ -145,14 +169,16 @@ and open the template in the editor.
                         from the <a href="http://rdf2h.github.io/rdf2h/manual.html">RDF2h documentation</a>.
                    </li>
                 </ul>
+                <button id="rendering-solution-button">Show solution</button>
             </div>
             <div>Render a resource using RDF2h matchers.</div>
-            <div>Resource: <input id="resource" type="text" size="80" value="https://www.w3.org/People/Berners-Lee/card#i" /></div>
+            <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
             <div>RDF2h matchers:</div>
             <div id="matchersEditor" class="editor"></div>
             <button id="run">Run</button>
             <div id="result"></div>
         </div>
+        <div style="display: none" id="sourceURI-solution">https://www.w3.org/People/Berners-Lee/card.rdf</div>
         <script id="script" type="example/js">
 function replacePredicate(original, replacement) {
   g.forEach(function(t) {
@@ -181,6 +207,7 @@ var schemaGivenName = rdf.createNamedNode(
     "http://schema.org/givenName");
 replacePredicate(foafGivenName, schemaGivenName);
         </script>
+        <div style="display: none" id="rendering-resource-solution">https://www.w3.org/People/Berners-Lee/card#i</div>
         <script id="matchers" type="text/turtle">
 @base <http://styles.example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
