@@ -1,0 +1,8 @@
+@prefix schema: <http://schema.org/> .
+@prefix lodide: <http://onology.lodide.io/> .
+
+<> a schema:WebPage;
+   lodide:intro """<h2>First exercise</h2>
+            <p>This is the first and for now the only LodIDE exercise, more 
+                exercises will come soon. <br/>
+                In his exercise you will manipulate and render RDF data in your browser.</p>""".
