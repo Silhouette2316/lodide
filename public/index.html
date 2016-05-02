@@ -102,7 +102,22 @@ and open the template in the editor.
 
         </script>
         <script>
+            //From http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
+            var getURLParameter = function(sParam) {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++) {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1];
+                    }
+                }
+            };
             $(function() {
+                var exerciseParam = getURLParameter("exercise");
+                if (exerciseParam) {
+                    $("#exercise").attr("resource", exerciseParam);
+                }
                 LD2h.expand();
                 //This a hack because we don't know when LD2h is finished
                 window.setTimeout(function() {
@@ -187,7 +202,7 @@ and open the template in the editor.
                 </div>
                 <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
             </header>
-            <div class="intro, fetch" resource="exercises/exercise-1.ttl">
+            <div class="intro, fetch" id="exercise" resource="exercises/exercise-1.ttl">
 
             <button id="run">Run my code</button>
             <div id="result"></div>
