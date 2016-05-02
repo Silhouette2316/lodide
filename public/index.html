@@ -34,7 +34,12 @@ and open the template in the editor.
                 r2h:template [ 
                     r2h:context <http://lodide.io/rdf2h-context/intro>;
                     r2h:mustache '''{{{lodide:intro}}}<br/>
-                                    {{{:render lodide:dataSource}}}'''
+                                    {{{:render lodide:dataSource}}}<br>
+                                    {{{:render lodide:dataProcessing}}}<br>
+                                    {{{:render lodide:dataRendering}}}<br>
+                                    <div class="exercise">
+                                    {{{lodide:finalWords}}}
+                                    </div>'''
                 ]
             ].
             [ a r2h:Matcher ;
@@ -45,15 +50,55 @@ and open the template in the editor.
                 r2h:template [ 
                     r2h:context <http://lodide.io/rdf2h-context/intro>;
                     r2h:mustache '''<h2>Data source</h2>
-            <div class="exercise">
-            {{{lodide:taskDescription}}}
-                <button id="sourceURI-solution-button">Show solution</button>
-            </div>
-            <div>
-                Specify the URL from which to retrieve the RDF data:
-                <input id="sourceURI" type="text" size="80" value="" />
-            </div>
-            <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>'''
+                        <div class="exercise">
+                        {{{lodide:taskDescription}}}
+                            <button id="sourceURI-solution-button">Show solution</button>
+                        </div>
+                        <div>
+                            Specify the URL from which to retrieve the RDF data:
+                            <input id="sourceURI" type="text" size="80" value="" />
+                        </div>
+                        <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>'''
+                ]
+            ].
+            [ a r2h:Matcher ;
+                    r2h:triplePattern [    
+                    r2h:predicate lodide:dataProcessing;
+                    r2h:object r2h:this;
+                ];
+                r2h:template [ 
+                    r2h:context <http://lodide.io/rdf2h-context/intro>;
+                    r2h:mustache '''<h2>Data Processing</h2>
+                        <div class="exercise">
+                            {{{lodide:taskDescription}}}
+                            <button id="codeEditor-solution-button">Show solution</button>
+                        </div>
+                        <div>
+                            Act on the data available as graph object <code>g</code>;
+                        </div>
+                        <div id="codeEditor" class="editor"></div>
+                        <div style="display: none" id="codeEditor-solution">{{lodide:taskSolutionCode}}</div>'''
+                ]
+            ].
+                    
+            [ a r2h:Matcher ;
+                    r2h:triplePattern [    
+                    r2h:predicate lodide:dataRendering;
+                    r2h:object r2h:this;
+                ];
+                r2h:template [ 
+                    r2h:context <http://lodide.io/rdf2h-context/intro>;
+                    r2h:mustache '''<h2>Data Rendering</h2>
+                        <div class="exercise">
+                            {{{lodide:taskDescription}}}
+                            <button id="rendering-solution-button">Show solution</button>
+                        </div>
+                        <div>Render a resource using RDF2h matchers.</div>
+                        <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
+                        <div>RDF2h matchers:</div>
+                        <div id="matchersEditor" class="editor"></div>
+                        <div style="display: none" id="rendering-resource-solution">{{lodide:taskSolutionResource}}</div>
+                        <div style="display: none" id="matchersEditor-solution">{{lodide:taskSolutionCode}}</div>'''
                 ]
             ].
                     
@@ -61,48 +106,47 @@ and open the template in the editor.
         </script>
         <script>
             $(function() {
-                
-                var codeEditor = CodeMirror($("#codeEditor")[0], {
-                    mode: "javascript"
-                });
-                var matchersEditor = CodeMirror($("#matchersEditor")[0], {
-                    mode: "turtle"
-                });
-                var run = function() {
-                    var sourceURI = $("#sourceURI").val();
-                    var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
-                    var store = new LdpStore({
-                        parsers: new LdpStore.ParserUtil({
-                            'text/turtle': turtleParser,
-                            'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
-                            'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
-                        })
-                    });
-                    store.match(
-                        null,
-                        null,
-                        null,
-                        sourceURI,
-                        function (error, g) {
-                            if (!g) {
-                                console.warn("Couldn't get any triple from "+sourceURI+". reason: "+error);
-                            } else {
-                                console.log("Got graph of size "+g.length+" from "+sourceURI);
-                            }
-                            var code = codeEditor.getValue();
-                            eval(code);
-                            var resource = rdf.createNamedNode($("#rendering-resource").val());
-                            var matchersTurtle = matchersEditor.getValue();
-                            turtleParser.parse(matchersTurtle).then(function (matchers) {
-                                var renderingResult = new RDF2h(matchers).render(
-                                        g, resource);
-                                $("#result").html(renderingResult);
-                            });
-                    });
-                };
                 LD2h.expand();
                 //This a hack because we don't know when LD2h is finished
                 window.setTimeout(function() {
+                    var codeEditor = CodeMirror($("#codeEditor")[0], {
+                        mode: "javascript"
+                    });
+                    var matchersEditor = CodeMirror($("#matchersEditor")[0], {
+                        mode: "turtle"
+                    });
+                    var run = function() {
+                        var sourceURI = $("#sourceURI").val();
+                        var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
+                        var store = new LdpStore({
+                            parsers: new LdpStore.ParserUtil({
+                                'text/turtle': turtleParser,
+                                'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
+                                'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
+                            })
+                        });
+                        store.match(
+                            null,
+                            null,
+                            null,
+                            sourceURI,
+                            function (error, g) {
+                                if (!g) {
+                                    console.warn("Couldn't get any triple from "+sourceURI+". reason: "+error);
+                                } else {
+                                    console.log("Got graph of size "+g.length+" from "+sourceURI);
+                                }
+                                var code = codeEditor.getValue();
+                                eval(code);
+                                var resource = rdf.createNamedNode($("#rendering-resource").val());
+                                var matchersTurtle = matchersEditor.getValue();
+                                turtleParser.parse(matchersTurtle).then(function (matchers) {
+                                    var renderingResult = new RDF2h(matchers).render(
+                                            g, resource);
+                                    $("#result").html(renderingResult);
+                                });
+                        });
+                    };               
                     $("#run").on("click", run);
                 
                     $("#sourceURI-solution-button").on("click", function() {
@@ -116,7 +160,7 @@ and open the template in the editor.
                             message += "\nWARNING: The code that you've already entered will be gone forever.";
                         }
                         if (confirm(message)) {
-                            codeEditor.setValue($("#script").text().trim());
+                            codeEditor.setValue($("#codeEditor-solution").text().trim());
                         }
                     });
                     $("#rendering-solution-button").on("click", function() {
@@ -126,7 +170,7 @@ and open the template in the editor.
                         }
                         if (confirm(message)) {
                             $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
-                            matchersEditor.setValue($("#matchers").text().trim());
+                            matchersEditor.setValue($("#matchersEditor-solution").text().trim());
                         }
                     });
                 }, 300);
@@ -147,143 +191,9 @@ and open the template in the editor.
                 <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
             </header>
             <div class="intro, fetch" resource="exercises/exercise-1.ttl" context="http://lodide.io/rdf2h-context/intro">
-            </div>
-            
-            <h2>Data Processing</h2>
-            <div class="exercise">
-                <ul>
-                    <li>Tim Berner-Lee's profile uses the FOAF ontology, write 
-                        some code to replace FOAF terms with the corresponding 
-                        terms from schema.org.</li>
-                    <li>Replace at least the following:
-                        <ul>
-                            <li><code>http://xmlns.com/foaf/0.1/Person</code> with <code>http://schema.org/Person</code></li>
-                            <li><code>http://xmlns.com/foaf/0.1/givenname</code> with <code>http://schema.org/givenName</code></li>
-                        </ul>
-                    </li>
-                    <li>You'll probably need the following functions:
-                        <ul>
-                            <li><code>forEach(callback)</code> of the 
-                                <code>Graph</code> instance (i.e. the object <code>g</code>)
-                                to access the individual triples,
-                                the <code>callback</code> is a function that gets
-                                a <code>Triple</code> as argument.<br/>
-                                A triple has the following properties:
-                                <ul>
-                                    <li><code>subject</code></li>
-                                    <li><code>predicate</code></li>
-                                    <li><code>object</code></li>
-                                </ul>
-                            </li>
-                            <li><code>remove(triple)</code>: to remove a triple 
-                                from  a graph.</li>
-                            <li><code>createTriple(subject, predicate, object)</code>: 
-                                this is a method of the global <code>rdf</code>
-                                object and is needed to create a <code>Triple</code>.</li>
-                            <li><code>createNamedNode(string)</code>: 
-                                this is also a method of the global <code>rdf</code>
-                                object and is used to create a <em>named node</em>
-                                from the String representation a given 
-                                <em>IRI</em> (URI or URL).</li>
-                            <li><code>equals(other)</code>: This method is used
-                                to check if two objects represent the same node.</li>
-                        </ul>
-                    </li>
-                </ul>
-                <button id="codeEditor-solution-button">Show solution</button>
-            </div>
-            <div>
-                Act on the data available as graph object <code>g</code>;
-            </div>
-            <div id="codeEditor" class="editor"></div>
-            <h2>Data Rendering</h2>
-            <div class="exercise">
-                <ul>
-                    <li>Render the resource <code>https://www.w3.org/People/Berners-Lee/card#i</code></li>
-                    <li>You may use the RDF2h matchers from the 
-                        <a href="http://rdf2h.github.io/rdf2h/index.html#bernadette-sample">Bernadette example</a>
-                        from the <a href="http://rdf2h.github.io/rdf2h/manual.html">RDF2h documentation</a>.
-                   </li>
-                </ul>
-                <button id="rendering-solution-button">Show solution</button>
-            </div>
-            <div>Render a resource using RDF2h matchers.</div>
-            <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
-            <div>RDF2h matchers:</div>
-            <div id="matchersEditor" class="editor"></div>
-            <div class="exercise">
-                <ul>
-                    <li>When you're finished press the "Run my code"-button.
-                    The results will show up below the button.
-                    If you did everything right you should see at least Tim 
-                    Berner's Lee first name.</li>
-                </ul>
-            </div>
+
             <button id="run">Run my code</button>
             <div id="result"></div>
         </div>
-        
-        <script id="script" type="example/js">
-function replacePredicate(original, replacement) {
-  g.forEach(function(t) {
-    if (t.predicate.equals(original)) {
-      g.remove(t);
-      g.add(rdf.createTriple(t.subject, replacement, t.object));
-    }
-  });
-}
-function replaceObject(original, replacement) {
-  g.forEach(function(t) {
-    if (t.object.equals(original)) {
-      g.remove(t);
-      g.add(rdf.createTriple(t.subject, t.predicate, replacement));
-    }
-  });
-}
-var foafPerson = rdf.createNamedNode(
-  "http://xmlns.com/foaf/0.1/Person");
-var schemaPerson = rdf.createNamedNode(
-  "http://schema.org/Person");
-replaceObject(foafPerson, schemaPerson);
-var foafGivenName = rdf.createNamedNode(
-    "http://xmlns.com/foaf/0.1/givenname");
-var schemaGivenName = rdf.createNamedNode(
-    "http://schema.org/givenName");
-replacePredicate(foafGivenName, schemaGivenName);
-        </script>
-        <div style="display: none" id="rendering-resource-solution">https://www.w3.org/People/Berners-Lee/card#i</div>
-        <script id="matchers" type="text/turtle">
-@base <http://styles.example.org/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
-@prefix s: <http://schema.org/> .
-
-[ a r2h:Matcher ;
-  r2h:triplePattern [
-    r2h:subject r2h:this;
-    r2h:predicate rdf:type;
-    r2h:object s:Person
-  ];
-  r2h:template [ 
-    r2h:context r2h:Default;
-    r2h:mustache '''
-<h1>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</h1>
-{{#+s:knows}}
-  <h2>Knows</h2>
-  <ul>
-  {{#s:knows}}
-    {{#+s:givenName}}
-    <li>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</li>
-    {{/+s:givenName}}
-    {{^+s:givenName}}
-    <li>{{.}}</li>
-    {{/+s:givenName}}                            
-  {{/s:knows}}                             
-  </ul>                         
-{{/+s:knows}} 
-    '''
-  ]
-].
-        </script>
     </body>
 </html>
