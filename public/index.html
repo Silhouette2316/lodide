@@ -24,7 +24,7 @@ and open the template in the editor.
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
             @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
-            @prefix lodide: <http://onology.lodide.io/> .
+            @prefix lodide: <http://ontology.lodide.io/> .
             @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
             [ a r2h:Matcher ;
                     r2h:triplePattern [    
@@ -33,9 +33,30 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                     r2h:context <http://lodide.io/rdf2h-context/intro>;
-                    r2h:mustache '''{{{lodide:intro}}}'''
+                    r2h:mustache '''{{{lodide:intro}}}<br/>
+                                    {{{:render lodide:dataSource}}}'''
                 ]
             ].
+            [ a r2h:Matcher ;
+                    r2h:triplePattern [    
+                    r2h:predicate lodide:dataSource;
+                    r2h:object r2h:this;
+                ];
+                r2h:template [ 
+                    r2h:context <http://lodide.io/rdf2h-context/intro>;
+                    r2h:mustache '''<h2>Data source</h2>
+            <div class="exercise">
+            {{{lodide:taskDescription}}}
+                <button id="sourceURI-solution-button">Show solution</button>
+            </div>
+            <div>
+                Specify the URL from which to retrieve the RDF data:
+                <input id="sourceURI" type="text" size="80" value="" />
+            </div>
+            <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>'''
+                ]
+            ].
+                    
 
         </script>
         <script>
@@ -79,32 +100,38 @@ and open the template in the editor.
                             });
                     });
                 };
-                $("#run").on("click", run);
-                $("#sourceURI-solution-button").on("click", function() {
-                    if (confirm("Confirm that you are you too lazy to copy and paste that URI.")) {
-                        $("#sourceURI").val($("#sourceURI-solution").text().trim());
-                    }
-                });
-                $("#codeEditor-solution-button").on("click", function() {
-                    var message = "Confirm that you would like to see the solution.";
-                    if (codeEditor.getValue().trim().length > 0) {
-                        message += "\nWARNING: The code that you've already entered will be gone forever.";
-                    }
-                    if (confirm(message)) {
-                        codeEditor.setValue($("#script").text().trim());
-                    }
-                });
-                $("#rendering-solution-button").on("click", function() {
-                    var message = "Confirm that you would like to see the solution.";
-                    if (matchersEditor.getValue().trim().length > 0) {
-                        message += "\nWARNING: That code that you've already entered will be forever lost.";
-                    }
-                    if (confirm(message)) {
-                        $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
-                        matchersEditor.setValue($("#matchers").text().trim());
-                    }
-                });
                 LD2h.expand();
+                //This a hack because we don't know when LD2h is finished
+                window.setTimeout(function() {
+                    $("#run").on("click", run);
+                
+                    $("#sourceURI-solution-button").on("click", function() {
+                        if (confirm("Confirm that you are you too lazy to copy and paste that URI.")) {
+                            $("#sourceURI").val($("#sourceURI-solution").text().trim());
+                        }
+                    });
+                    $("#codeEditor-solution-button").on("click", function() {
+                        var message = "Confirm that you would like to see the solution.";
+                        if (codeEditor.getValue().trim().length > 0) {
+                            message += "\nWARNING: The code that you've already entered will be gone forever.";
+                        }
+                        if (confirm(message)) {
+                            codeEditor.setValue($("#script").text().trim());
+                        }
+                    });
+                    $("#rendering-solution-button").on("click", function() {
+                        var message = "Confirm that you would like to see the solution.";
+                        if (matchersEditor.getValue().trim().length > 0) {
+                            message += "\nWARNING: That code that you've already entered will be forever lost.";
+                        }
+                        if (confirm(message)) {
+                            $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
+                            matchersEditor.setValue($("#matchers").text().trim());
+                        }
+                    });
+                }, 300);
+                
+                
             });
         </script>
     </head>
@@ -121,15 +148,7 @@ and open the template in the editor.
             </header>
             <div class="intro, fetch" resource="exercises/exercise-1.ttl" context="http://lodide.io/rdf2h-context/intro">
             </div>
-            <h2>Data source</h2>
-            <div class="exercise">
-                <span class="fetch" resource="exercises/exercise-1.ttl" context="http://lodide.io/rdf2h-context/dataSourceComment" />
-                <button id="sourceURI-solution-button">Show solution</button>
-            </div>
-            <div>
-                Specify the URL from which to retrieve the RDF data:
-                <input id="sourceURI" type="text" size="80" value="" />
-            </div>
+            
             <h2>Data Processing</h2>
             <div class="exercise">
                 <ul>
@@ -203,7 +222,7 @@ and open the template in the editor.
             <button id="run">Run my code</button>
             <div id="result"></div>
         </div>
-        <div style="display: none" id="sourceURI-solution">https://www.w3.org/People/Berners-Lee/card.rdf</div>
+        
         <script id="script" type="example/js">
 function replacePredicate(original, replacement) {
   g.forEach(function(t) {
