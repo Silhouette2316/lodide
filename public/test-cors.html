@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+
+        <h2>AJAX/CORS Test page</h2>
+
+        <button type="button" onclick="loadDoc()">Request data</button>
+
+        <script>
+        function loadDoc() {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              alert(xhttp.responseText);
+            }
+          };
+          xhttp.open("GET", "http://www.w3.org/People/Berners-Lee/card.rdf", true);
+          xhttp.send();
+        }
+        </script>
+    </body>
+</html>
