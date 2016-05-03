@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>AJAX/CORS Test</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
@@ -12,16 +12,25 @@
         <button type="button" onclick="loadDoc()">Request data</button>
 
         <script>
+            function createCORSRequest(method, url){
+                var xhr = new XMLHttpRequest();
+                if ("withCredentials" in xhr){
+                  xhr.open(method, url, true);
+                } else if (typeof XDomainRequest != "undefined"){
+                  xhr = new XDomainRequest();
+                  xhr.open(method, url);
+                } else {
+                  xhr = null;
+                }
+                return xhr;
+              }
         function loadDoc() {
-          var xhttp = new XMLHttpRequest();
+          var xhttp = new createCORSRequest("GET", "http://www.w3.org/People/Berners-Lee/card.rdf");
           xhttp.onreadystatechange = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
               alert(xhttp.responseText);
-            } else {
-              alert("Got response: "+xhttp.status)
             }
           };
-          xhttp.open("GET", "http://www.w3.org/People/Berners-Lee/card.rdf", true);
           xhttp.send();
         }
         </script>
