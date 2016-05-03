@@ -17,6 +17,8 @@
           xhttp.onreadystatechange = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
               alert(xhttp.responseText);
+            } else {
+              alert("Got response: "+xhttp.status)
             }
           };
           xhttp.open("GET", "http://www.w3.org/People/Berners-Lee/card.rdf", true);
