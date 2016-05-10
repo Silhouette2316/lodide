@@ -2,32 +2,27 @@
 @prefix lodide: <http://ontology.lodide.io/> .
 
 <> a lodide:Exercise;
-    lodide:intro """<h2>Second exercise</h2>
-            <p>This is the second exercise under construction</p>""";
+    lodide:intro """<h2>City population</h2>
+            <p>In this exercise you will get a very simple piece of data from DbPedia.</p>""";
     lodide:finalWords """<ul>
-                    <li>When you're finished press the "Run my code"-button.
-                    The results will show up below the button.
-                    If you did everything right you should see at least Tim 
-                    Berner's Lee first name.</li>
+                    <li>When you're finished press the "Run my code"-button to
+                    run your code.
+                    If you have done everything right you should see an alert with the 
+                    population of Bern.</li>
                 </ul>""";
     lodide:dataSource [    
         lodide:taskDescription """<ul>
-                    <li>As data source specify Tim Berner-Lee's personal profile 
-                        document available at <code>https://www.w3.org/People/Berners-Lee/card.rdf</code></li>
+                    <li>Enter the DbPedia URI representing the city of Berne
+                    (<code>http://dbpedia.org/resource/Bern</code>), dereferencing
+                    this URI will redirect to the RDF description of the city.</li>
                 </ul>""";
-        lodide:taskSolutionResource <https://www.w3.org/People/Berners-Lee/card.rdf>
+        lodide:taskSolutionResource <http://dbpedia.org/resource/Bern>
                 ];
     lodide:dataProcessing [    
         lodide:taskDescription """<ul>
-                    <li>Tim Berner-Lee's profile uses the FOAF ontology, write 
-                        some code to replace FOAF terms with the corresponding 
-                        terms from schema.org.</li>
-                    <li>Replace at least the following:
-                        <ul>
-                            <li><code>http://xmlns.com/foaf/0.1/Person</code> with <code>http://schema.org/Person</code></li>
-                            <li><code>http://xmlns.com/foaf/0.1/givenname</code> with <code>http://schema.org/givenName</code></li>
-                        </ul>
-                    </li>
+                    <li>Your task is to get the name and the population of the
+                    city described in the graph. For simplicity you may
+                    assume that the graph describes only one city.</li>
                     <li>You'll probably need the following functions:
                         <ul>
                             <li><code>forEach(callback)</code> of the 
@@ -42,11 +37,6 @@
                                     <li><code>object</code></li>
                                 </ul>
                             </li>
-                            <li><code>remove(triple)</code>: to remove a triple 
-                                from  a graph.</li>
-                            <li><code>createTriple(subject, predicate, object)</code>: 
-                                this is a method of the global <code>rdf</code>
-                                object and is needed to create a <code>Triple</code>.</li>
                             <li><code>createNamedNode(string)</code>: 
                                 this is also a method of the global <code>rdf</code>
                                 object and is used to create a <em>named node</em>
@@ -57,75 +47,18 @@
                         </ul>
                     </li>
                 </ul>""";
-        lodide:taskSolutionCode """function replacePredicate(original, replacement) {
-  g.forEach(function(t) {
-    if (t.predicate.equals(original)) {
-      g.remove(t);
-      g.add(rdf.createTriple(t.subject, replacement, t.object));
+        lodide:taskSolutionCode """var populationProperty = rdf.createNamedNode("http://dbpedia.org/property/population");
+var subjectNameProperty = rdf.createNamedNode("http://dbpedia.org/property/subjectName");
+var population = null;
+var name = null;
+g.forEach(function(t) {
+    if (t.predicate.equals(populationProperty)) {
+      population = t.object;
+    }
+    if (t.predicate.equals(subjectNameProperty)) {
+      name = t.object;
     }
   });
-}
-function replaceObject(original, replacement) {
-  g.forEach(function(t) {
-    if (t.object.equals(original)) {
-      g.remove(t);
-      g.add(rdf.createTriple(t.subject, t.predicate, replacement));
-    }
-  });
-}
-var foafPerson = rdf.createNamedNode(
-  "http://xmlns.com/foaf/0.1/Person");
-var schemaPerson = rdf.createNamedNode(
-  "http://schema.org/Person");
-replaceObject(foafPerson, schemaPerson);
-var foafGivenName = rdf.createNamedNode(
-    "http://xmlns.com/foaf/0.1/givenname");
-var schemaGivenName = rdf.createNamedNode(
-    "http://schema.org/givenName");
-replacePredicate(foafGivenName, schemaGivenName);"""
-                ];
-
-    lodide:dataRendering [    
-        lodide:taskDescription """<ul>
-                <li>Render the resource <code>https://www.w3.org/People/Berners-Lee/card#i</code></li>
-                <li>You may use the RDF2h matchers from the 
-                    <a href="http://rdf2h.github.io/rdf2h/index.html#bernadette-sample">Bernadette example</a>
-                    from the <a href="http://rdf2h.github.io/rdf2h/manual.html">RDF2h documentation</a>.
-               </li>
-            </ul>""";
-        lodide:taskSolutionResource <https://www.w3.org/People/Berners-Lee/card#i> ;
-        lodide:taskSolutionCode """
-@base <http://styles.example.org/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
-@prefix s: <http://schema.org/> .
-
-[ a r2h:Matcher ;
-  r2h:triplePattern [
-    r2h:subject r2h:this;
-    r2h:predicate rdf:type;
-    r2h:object s:Person
-  ];
-  r2h:template [ 
-    r2h:context r2h:Default;
-    r2h:mustache '''
-<h1>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</h1>
-{{#+s:knows}}
-  <h2>Knows</h2>
-  <ul>
-  {{#s:knows}}
-    {{#+s:givenName}}
-    <li>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</li>
-    {{/+s:givenName}}
-    {{^+s:givenName}}
-    <li>{{.}}</li>
-    {{/+s:givenName}}                            
-  {{/s:knows}}                             
-  </ul>                         
-{{/+s:knows}} 
-    '''
-  ]
-].
+alert("The population of "+name+" is "+population);
 """
                 ].
-
