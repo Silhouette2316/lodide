@@ -151,11 +151,13 @@ and open the template in the editor.
                                 eval(code);
                                 var resource = rdf.createNamedNode($("#rendering-resource").val());
                                 var matchersTurtle = matchersEditor.getValue();
-                                turtleParser.parse(matchersTurtle).then(function (matchers) {
-                                    var renderingResult = new RDF2h(matchers).render(
-                                            g, resource);
-                                    $("#result").html(renderingResult);
-                                });
+                                if (matchersTurtle.length > 0) {
+                                    turtleParser.parse(matchersTurtle).then(function (matchers) {
+                                        var renderingResult = new RDF2h(matchers).render(
+                                                g, resource);
+                                        $("#result").html(renderingResult);
+                                    });
+                                }
                         });
                     };               
                     $("#run").on("click", run);
