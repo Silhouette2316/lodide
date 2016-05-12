@@ -35,7 +35,23 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                   r2h:context r2h:Default;
-                  r2h:mustache "Here you'll get the index: {{{:render lodide:elements}}}"
+                  r2h:mustache """<h1>LodIde</h1>
+                    <div>You can start LodIDE with various exercises/examples, 
+                        here's a selection:
+                        <ul>
+                            {{{:render lodide:elements}}}
+                        </ul>"""
+                ]
+            ].
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:type;
+                  r2h:object lodide:Exercise;
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache "{{{lodide:intro}}}"
                 ]
             ].
             [ a r2h:Matcher ;
@@ -71,7 +87,11 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                   r2h:context r2h:Default;
-                  r2h:mustache "An exercise: <a href='ide.html?exercise={{{lodide:exercise}}}'>go play</a>"
+                  r2h:mustache """
+                        {{{schema:description}}}
+                        <div class="fetch, exercise-index" resource="{{{lodide:exercise}}}">More info about exercise will show up here</div>
+                        <a href='ide.html?exercise={{{lodide:exercise}}}'>go play</a>
+                  """
                 ]
             ].
         </script>

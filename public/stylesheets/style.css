@@ -49,3 +49,7 @@ a {
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
 }
+
+.exercise-index h1 {
+    font-size: 50%
+}
