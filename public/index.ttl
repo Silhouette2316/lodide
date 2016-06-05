@@ -4,11 +4,11 @@
 <> a lodide:Index;
    lodide:elements (
     [
-        lodide:exercise <exercises/exercise-1.ttl>;
+        lodide:exercise <exercises/city-population.ttl>;
         schema:description "A simple exercise"
     ]
     [
-        lodide:exercise <exercises/exercise-2.ttl>;
-        schema:description "Still a simple exercise"
+        lodide:exercise <exercises/render-timbl.ttl>;
+        schema:description "A more complete exercise"
     ]
 ).
