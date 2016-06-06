@@ -16,10 +16,6 @@ and open the template in the editor.
         <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
         <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
-        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.js"></script>
-        <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
-        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/javascript/javascript.js"></script>
-        <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/turtle/turtle.js"></script>
         <script id="matchers" type="text/turtle">
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -36,8 +32,7 @@ and open the template in the editor.
                 r2h:template [ 
                   r2h:context r2h:Default;
                   r2h:mustache """<h1>LodIde</h1>
-                    <div>You can start LodIDE with various exercises/examples, 
-                        here's a selection:
+                    <div>You can start LodIDE with various exercises/examples.
                         <ul>
                             {{{:render lodide:elements}}}
                         </ul>"""
@@ -63,7 +58,7 @@ and open the template in the editor.
                 r2h:template [ 
                   r2h:context r2h:Default;
                   r2h:mustache '''
-              <li>{{{:render rdf:first}}}</li> 
+              <li class="exercise-index">{{{:render rdf:first}}}</li> 
                   '''
                 ] 
             ] r2h:before [ 
@@ -75,7 +70,7 @@ and open the template in the editor.
                     r2h:template [ 
                       r2h:context r2h:Default;
                       r2h:mustache '''
-                  <li>{{{:render rdf:first}}}</li> 
+                  <li class="exercise-index">{{{:render rdf:first}}}</li> 
                   {{{:render rdf:rest}}}
                       '''
                     ]
@@ -88,8 +83,8 @@ and open the template in the editor.
                 r2h:template [ 
                   r2h:context r2h:Default;
                   r2h:mustache """
-                        {{{schema:description}}}
-                        <div class="fetch, exercise-index" resource="{{{lodide:exercise}}}">More info about exercise will show up here</div>
+                        {{{schema:description}}}:
+                        <div class="fetch" resource="{{{lodide:exercise}}}">More info about exercise will show up here</div>
                         <a href='ide.html?exercise={{{lodide:exercise}}}'>go play</a>
                   """
                 ]

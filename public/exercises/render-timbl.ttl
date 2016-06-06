@@ -2,10 +2,9 @@
 @prefix lodide: <http://ontology.lodide.io/> .
 
 <> a lodide:Exercise;
-    lodide:intro """<h2>First exercise</h2>
-            <p>This is the first and for now the only LodIDE exercise, more 
-                exercises will come soon. <br/>
-                In his exercise you will manipulate and render RDF data in your browser.</p>""";
+    lodide:intro """<h2>Access FOAF Profile</h2>
+            <p>In his exercise you will manipulate and render RDF data in your browser.
+You will access the FOAF profile of Tim Berners-Lee transform it to use properties from schema.org and render it.</p>""";
     lodide:finalWords """<ul>
                     <li>When you're finished press the "Run my code"-button.
                     The results will show up below the button.
