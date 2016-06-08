@@ -49,3 +49,15 @@ a {
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
 }
+.exercise-index {
+    margin-top: 2em;
+}
+
+.exercise-index h2 {
+    font-size: 120%;
+}
+
+#exercises-index-menu {
+    width: 100%;
+    text-align: right;
+}

@@ -1,0 +1,14 @@
+@prefix schema: <http://schema.org/> .
+@prefix lodide: <http://ontology.lodide.io/> .
+
+<> a lodide:Index;
+   lodide:elements (
+    [
+        lodide:exercise <exercises/city-population.ttl>;
+        schema:description "A simple exercise"
+    ]
+    [
+        lodide:exercise <exercises/render-timbl.ttl>;
+        schema:description "A more complete exercise"
+    ]
+).

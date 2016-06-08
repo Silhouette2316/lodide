@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>LodIDE</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+        <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
+        <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
+        <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+        <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
+        <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+        <script id="matchers" type="text/turtle">
+            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+            @prefix lodide: <http://ontology.lodide.io/> .
+            @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+            
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:type;
+                  r2h:object lodide:Index;
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache """<h1>LodIde</h1>
+                    <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
+                        <ul>
+                            {{{:render lodide:elements}}}
+                        </ul>"""
+                ]
+            ].
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:type;
+                  r2h:object lodide:Exercise;
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache "{{{lodide:intro}}}"
+                ]
+            ].
+            [ a r2h:Matcher ;
+                r2h:triplePattern [
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:rest;
+                  r2h:object rdf:nil
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache '''
+              <li class="exercise-index">{{{:render rdf:first}}}</li> 
+                  '''
+                ] 
+            ] r2h:before [ 
+                a r2h:Matcher ;
+                    r2h:triplePattern [
+                      r2h:subject r2h:this;
+                      r2h:predicate rdf:first
+                    ];
+                    r2h:template [ 
+                      r2h:context r2h:Default;
+                      r2h:mustache '''
+                  <li class="exercise-index">{{{:render rdf:first}}}</li> 
+                  {{{:render rdf:rest}}}
+                      '''
+                    ]
+            ]. 
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate lodide:exercise;
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache """
+                        {{{schema:description}}}:
+                        <div class="fetch" resource="{{{lodide:exercise}}}">More info about exercise will show up here</div>
+                        <a href='./?exercise={{{lodide:exercise}}}'>go play</a>
+                  """
+                ]
+            ].
+        </script>
+    </head>
+    <body>
+        <header>
+            <div id="header" class="col-sm-12">
+                <h4><a class="brand" href="http://edulod.github.io/"><img id="logo" src="images/edulod-square.png" alt="EDULOD Logo"> EDULOD</a>
+                    <small>LodIDE: Use Linked Open data!</small>
+                </h4>
+
+            </div>
+            <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
+        </header>
+        <div class="fetch" resource="index.ttl">Index should appear here.</div>
+        <script type="text/javascript">
+                RDF2h.logger.setLevel(Logger.DEBUG)
+            $(function () {
+                LD2h.expand();
+            });
+        </script>
+    </body>
+</html>
