@@ -48,10 +48,14 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                     r2h:mustache '''<h2>Data source</h2>
+                        {{#+lodide:taskDescription}}
                         <div class="exercise">
-                        {{{lodide:taskDescription}}}
+                            {{{lodide:taskDescription}}}
+                            {{#lodide:taskSolutionResource}}
                             <button id="sourceURI-solution-button">Show solution</button>
+                            {{/lodide:taskSolutionResource}}
                         </div>
+                        {{/+lodide:taskDescription}}
                         <div>
                             Specify the URL from which to retrieve the RDF data:
                             <input id="sourceURI" type="text" size="80" value="" />
@@ -66,10 +70,14 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                     r2h:mustache '''<h2>Data Processing</h2>
+                        {{#+lodide:taskDescription}}
                         <div class="exercise">
                             {{{lodide:taskDescription}}}
+                            {{#lodide:taskSolutionCode}}
                             <button id="codeEditor-solution-button">Show solution</button>
+                            {{/lodide:taskSolutionCode}}
                         </div>
+                        {{/+lodide:taskDescription}}
                         <div>
                             Act on the data available as graph object <code>g</code>;
                         </div>
@@ -85,10 +93,14 @@ and open the template in the editor.
                 ];
                 r2h:template [ 
                     r2h:mustache '''<h2>Data Rendering</h2>
+                        {{#+lodide:taskDescription}}
                         <div class="exercise">
                             {{{lodide:taskDescription}}}
+                            {{#lodide:taskSolutionResource}}
                             <button id="rendering-solution-button">Show solution</button>
+                            {{/lodide:taskSolutionResource}}
                         </div>
+                        {{/+lodide:taskDescription}}
                         <div>Render a resource using RDF2h matchers.</div>
                         <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
                         <div>RDF2h matchers:</div>
@@ -203,7 +215,7 @@ and open the template in the editor.
                 </div>
                 <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
             </header>
-            <div class="intro, fetch" id="exercise" resource="exercises/exercise-1.ttl"> </div>
+            <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
 
             <button id="run">Run my code</button>
             <div id="result"></div>
