@@ -56,3 +56,8 @@ a {
 .exercise-index h2 {
     font-size: 120%;
 }
+
+#exercises-index-menu {
+    width: 100%;
+    text-align: right;
+}
