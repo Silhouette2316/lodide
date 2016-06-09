@@ -8,6 +8,7 @@ title: "EDULOD - LodIDE"
 LodIDE will provide an online development environment to easily get 
 started using Linked Open Data (LOD).
 
+Check it out online at [lodide.io](http://lodide.io).
 
 ### EDULOD
 
