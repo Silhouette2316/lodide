@@ -240,13 +240,30 @@ and open the template in the editor.
                 
                 function updateLogginStatus() {
                     if (profile) {
+                        $('.authenticatedOnly').show();
                         $('#login-div').html('<img src="'+profile.avatar_url+' width="20" height="20" />Logged in as '+profile.login+' (<a id="logout-link" href="#login">Logout</a>)');
                         $('#logout-link').click(function() {
                             profile = null;
                             updateLogginStatus();
                             return false;
                         });
+                        var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
+                        repo.getTree("master").then(function(r) { 
+                            var tree = r.data.tree
+                            //for (var i = 0; i < tree.length;i++) {
+                            //    var e = tree[i];
+                            tree.forEach(function(e) {
+                                console.log(e);
+                                repo.getContents('master', e.path, 'raw').then(function(response) {
+                                   console.log("Contents of: "+e.path);
+                                   console.log(response.data);
+                                });
+                            });
+                        }).catch(function(e) { 
+                            alert("e: "+e);
+                        });
                     } else {
+                        $('.authenticatedOnly').hide();
                         $('#login-div').html('<a id="login-link" href="#login">Login with GitHub</a>');
                         $('#login-link').click(function() {
                             $('#login-dialog').tabbedDialog();
@@ -254,6 +271,7 @@ and open the template in the editor.
                         });
                     }
                 }
+                
                 var loginButtonAction = function(auth) {
                     gh = new GitHub(auth);
                     var user = gh.getUser();
@@ -264,6 +282,8 @@ and open the template in the editor.
                         updateLogginStatus();
                         $('#login-dialog').dialog("close");
                     });
+                    
+                    
                 }
                 
                 $('#personalAccessTokenLoginButton').click(function() {
@@ -277,7 +297,38 @@ and open the template in the editor.
                         'username' : $('#userName').val(),
                         'password' : $('#password').val()
                     });
-                })
+                });
+                
+                $("#saveButton").click(function() {
+                    $("#fileNameDialog").modal("show");
+                });
+                
+                $("#saveButton2").click(function() {
+                    var fileName = $("#fileName").val();
+                    if (!fileName.endsWith(".ttl")) {
+                        fileName = fileName + ".ttl";
+                    }
+                    var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
+                    repo.listBranches().then(writeFile).catch(function() {
+                       //create new repository
+                       gh.getUser().createRepo({
+                        "name": "lodide-saved-contents",
+                        "description": "A repository for saving http://lodide.io/ projects.",
+                        "homepage": "http://lodide.io/",
+                        "private": false,
+                        "has_issues": false,
+                        "has_wiki": false,
+                        "has_downloads": false
+                      }).then(writeFile)
+                              .catch(function(a) {alert("error: "+a)});
+                    });
+                    function writeFile() { 
+                        repo.writeFile('master', fileName, "the triples will be here", "Code saved with http://lodide.io", {}).then(function(r) {
+                            alert("saved file: "+r);
+                            console.log(r);
+                         });
+                     }
+                });
 
             });
 
@@ -286,6 +337,7 @@ and open the template in the editor.
         </script>
     </head>
     <body>
+        
         <div id="login-dialog" title="Login with GitHub">
             <ul>
                 <li><a href="#password-login">Password Login</a></li>
@@ -307,9 +359,31 @@ and open the template in the editor.
                         https://github.com/settings/tokens
                     </a>.
                     <label for="personalAccessToken">Personal Access Token:</label><input type="text" id="personalAccessToken" /><br />
+                    <label for="personalAccessToken">Save for later:</label><input type=checkbox id="saveCredentialForLater" /><br />
                     <button id="personalAccessTokenLoginButton" type="button" class="btn btn-default">Login</button><br />
                 </div>
             </div>
+        </div>
+        <!-- Save: Name dialog -->
+        <div id="fileNameDialog" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                  <p><label for="fileName">Filename</label>:<input type="text" id="fileName" /></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="saveButton2" type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+              </div>
+            </div>
+
+          </div>
         </div>
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
@@ -329,6 +403,7 @@ and open the template in the editor.
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">LodIDE</a></li>
                         <li><a href="exercise-index.html">Exercises/Examples</a></li>
+                        <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li> -->
                         
@@ -344,9 +419,15 @@ and open the template in the editor.
 
             
             <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
-            
-            <button id="run" type="button" class="btn btn-primary">Run my code</button>
+            <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
+            <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
             <div id="result"></div>
+        </div>
+        
+        <div class="authenticatedOnly container" id="saved">
+            Saved contents will appear here.
+
+            
         </div>
         
         <footer class="footer">

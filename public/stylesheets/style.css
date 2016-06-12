@@ -24,11 +24,7 @@ a {
 }
 
 #run {
-    display: table;
-    align-self: center;
-    width: 50em;
-    margin: 1em auto;
-    padding: 1em 2em;
+
     font-size: larger;
     font-weight: bolder;
 }
@@ -67,6 +63,10 @@ a {
 }
 
 #login-dialog {
+    display: none;
+}
+
+.authenticatedOnly {
     display: none;
 }
 
