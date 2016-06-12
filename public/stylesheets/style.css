@@ -1,14 +1,14 @@
-body {
+/*body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   align-content: center;
-}
-#content {
+}*/
+/* #content {
     display: table;
     align-self: center;
     max-width: 80em;
     margin: 0 auto;
-}
+}*/
 
 a {
   color: #00B7FF;
@@ -26,8 +26,6 @@ a {
 #run {
     display: table;
     align-self: center;
-    background-color: #00B7FF;
-    color: white;
     width: 50em;
     margin: 1em auto;
     padding: 1em 2em;
@@ -41,8 +39,8 @@ a {
 }
 
 #logo {
-    width: 4em;
-    height: 4em;
+    width: 10;
+    height: 10;
 }
 
 #header {
@@ -74,4 +72,43 @@ a {
 
 #passwordLoginButton {
     
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
 }

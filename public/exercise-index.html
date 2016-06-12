@@ -10,12 +10,25 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
-        <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
         <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
         <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
+              crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
+              integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
+              crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
         <script id="matchers" type="text/turtle">
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -92,21 +105,47 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        <header>
-            <div id="header" class="col-sm-12">
-                <h4><a class="brand" href="http://edulod.github.io/"><img id="logo" src="images/edulod-square.png" alt="EDULOD Logo"> EDULOD</a>
-                    <small>LodIDE: Use Linked Open data!</small>
-                </h4>
-
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <span class="navbar-brand"><a  href="http://edulod.github.io/"> <img id="logo" src="images/edulod-square.png" 
+                                     alt="EDULOD Logo" with="20" height="20">
+                            EDULOD </a>LodIDE: Use Linked Open data!
+                    </span>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="exercise-index.html">Exercises/Examples</a></li>
+                        <!-- <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li> -->
+                        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#about"><span id="login-div"></span></a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
             </div>
-            <a href="https://github.com/edulod/lodide"><img style="position: absolute; top: 0; right: 0; border: 0;" src="images/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>    
-        </header>
-        <div class="fetch" resource="index.ttl">Index should appear here.</div>
+        </nav>
+
+        <div class="container" id="content">  
+            <div class="fetch" resource="index.ttl">Index should appear here.</div>
+        </div>
         <script type="text/javascript">
                 RDF2h.logger.setLevel(Logger.DEBUG)
             $(function () {
                 LD2h.expand();
             });
         </script>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted"><a href="https://github.com/edulod/lodide">LodIDE on GitHub</a></p>
+            </div>
+        </footer>
     </body>
 </html>
