@@ -20,6 +20,10 @@ and open the template in the editor.
         <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/javascript/javascript.js"></script>
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/turtle/turtle.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="//npmcdn.com/github-api@v2.2.0/dist/GitHub.bundle.min.js"></script>
+ 
         <script id="matchers" type="text/turtle">
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -125,6 +129,9 @@ and open the template in the editor.
                 }
             };
             $(function() {
+                var gh = null;
+                var profile;
+                
                 var exerciseParam = getURLParameter("exercise");
                 if (exerciseParam) {
                     $("#exercise").attr("resource", exerciseParam);
@@ -199,17 +206,96 @@ and open the template in the editor.
                         }
                     });
                 }, 300);
+
+                $.fn.tabbedDialog = function () {
+                    this.tabs();
+                    this.dialog({'modal':true,'minWidth':800, 'minHeight':300,'draggable':true});
+                };
+
+
+                updateLogginStatus();
+
                 
                 
+                
+                function updateLogginStatus() {
+                    if (profile) {
+                        $('#login-div').html('<img src="'+profile.avatar_url+' width="20" height="20" />Logged in as '+profile.login+' (<a id="logout-link" href="#login">Logout</a>)');
+                        $('#logout-link').click(function() {
+                            profile = null;
+                            updateLogginStatus();
+                            return false;
+                        });
+                    } else {
+                        $('#login-div').html('<a id="login-link" href="#login">Login with GitHub</a>');
+                        $('#login-link').click(function() {
+                            $('#login-dialog').tabbedDialog();
+                            return false;
+                        });
+                    }
+                }
+                var loginButtonAction = function(auth) {
+                    gh = new GitHub(auth);
+                    var user = gh.getUser();
+                    console.log(user);
+                    user.getProfile().then(function(response) {
+                        profile = response.data;
+                        console.log(profile);
+                        updateLogginStatus();
+                        $('#login-dialog').dialog("close");
+                    });
+                }
+                
+                $('#personalAccessTokenLoginButton').click(function() {
+                    loginButtonAction({
+                        token: $('#personalAccessToken').val(),
+                    });
+                });
+                
+                $('#passwordLoginButton').click(function() {
+                    loginButtonAction({
+                        'username' : $('#userName').val(),
+                        'password' : $('#password').val()
+                    });
+                })
+
             });
+
+
+
         </script>
     </head>
     <body>
+        <div id="login-dialog" title="Login with GitHub">
+            <ul>
+                <li><a href="#password-login">Password Login</a></li>
+                <li><a href="#personalAccessTokenLogin">Personal Access Token</a></li>
+            </ul>
+            <div>
+                <div id="password-login">
+                    <label for="userName">Username:</label><input type="text" id="userName" /><br />
+                    <label for="password">Password:</label><input type="password" id="password" /><br />
+                    <button id="passwordLoginButton">Login</button><br />
+                    Assuming nobody tampered with the scripts of this page, your 
+                    browser will send these credentials exclusively to GitHub 
+                    servers, if you feel uncorfortable you can login with a <i>personal
+                    access token</i> instead.
+                </div>
+                <div id="personalAccessTokenLogin">
+                    You can generate a new personal access token on 
+                    <a href="https://github.com/settings/tokens">
+                        https://github.com/settings/tokens
+                    </a>.
+                    <label for="personalAccessToken">Personal Access Token:</label><input type="text" id="personalAccessToken" /><br />
+                    <button id="personalAccessTokenLoginButton">Login</button><br />
+                </div>
+            </div>
+        </div>
         <div id="content">
             <header>
                 <div id="header" class="col-sm-12">
                     <h4><a class="brand" href="http://edulod.github.io/"><img id="logo" src="images/edulod-square.png" alt="EDULOD Logo"> EDULOD</a>
-                        <small>LodIDE: Use Linked Open data!</small>
+                        <small>LodIDE: Use Linked Open data!</small> <span id="login-div"></span>
                     </h4>
 
                 </div>

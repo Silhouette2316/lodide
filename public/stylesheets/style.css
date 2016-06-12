@@ -27,7 +27,7 @@ a {
     display: table;
     align-self: center;
     background-color: #00B7FF;
-    color: black;
+    color: white;
     width: 50em;
     margin: 1em auto;
     padding: 1em 2em;
@@ -60,4 +60,18 @@ a {
 #exercises-index-menu {
     width: 100%;
     text-align: right;
+}
+
+#login-div {
+    margin-top: 2em;
+    width: 100%;
+    text-align: left;
+}
+
+#login-dialog {
+    display: none;
+}
+
+#passwordLoginButton {
+    
 }
