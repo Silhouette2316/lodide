@@ -56,13 +56,12 @@ and open the template in the editor.
                     r2h:predicate lodide:intro;
                 ];
                 r2h:template [ 
-                    r2h:mustache '''{{{lodide:intro}}}<br/>
+                    r2h:mustache '''<span id="intro">{{{lodide:intro}}}</span><br/>
                                     {{{:render lodide:dataSource}}}<br>
                                     {{{:render lodide:dataProcessing}}}<br>
                                     {{{:render lodide:dataRendering}}}<br>
-                                    <div class="exercise">
-                                    {{{lodide:finalWords}}}
-                                    </div>'''
+                                    <div class="exercise" id="finalWords">{{{lodide:finalWords}}}</div>
+                                 '''
                 ]
             ].
             [ a r2h:Matcher ;
@@ -74,7 +73,7 @@ and open the template in the editor.
                     r2h:mustache '''<h2>Data source</h2>
                         {{#+lodide:taskDescription}}
                         <div class="exercise">
-                            {{{lodide:taskDescription}}}
+                            <span id="dataSource-taskDescription">{{{lodide:taskDescription}}}</span>
                             {{#lodide:taskSolutionResource}}
                             <button id="sourceURI-solution-button">Show solution</button>
                             {{/lodide:taskSolutionResource}}
@@ -309,7 +308,9 @@ and open the template in the editor.
                         fileName = fileName + ".ttl";
                     }
                     var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
-                    repo.listBranches().then(writeFile).catch(function() {
+                    repo.listBranches().then(writeFile).catch(function(e) {
+                        console.log("failed to write file, will attempt to create repo");
+                        console.log(e);
                        //create new repository
                        gh.getUser().createRepo({
                         "name": "lodide-saved-contents",
@@ -322,12 +323,38 @@ and open the template in the editor.
                       }).then(writeFile)
                               .catch(function(a) {alert("error: "+a)});
                     });
-                    function writeFile() { 
-                        repo.writeFile('master', fileName, "the triples will be here", "Code saved with http://lodide.io", {}).then(function(r) {
-                            alert("saved file: "+r);
-                            console.log(r);
+                    function writeFile() {
+                        serializeCurrentState().then(function(fileContent) {
+                            repo.writeFile('master', fileName, fileContent, 
+                                "Run it on http://lodide.io/?exercise=https://raw.githubusercontent.com/"+profile.login+"/lodide-saved-contents/master/"+fileName, {}).then(function(r) {
+                                alert("saved file: "+fileName);
+                                console.log(r);
+                             });
                          });
-                     }
+                    }
+                    function serializeCurrentState() {
+                        var g = new rdf.Graph();
+                        var exercise = rdf.createNamedNode(""); //rdf-ext supports relative IRIs
+                        g.add(rdf.createTriple(exercise, rdfNs("type"), lodIdeNs("Exercise")));
+                        g.add(rdf.createTriple(exercise, lodIdeNs("intro"), rdf.createLiteral($("#intro").html())));
+                        g.add(rdf.createTriple(exercise, lodIdeNs("finalWords"), 
+                                rdf.createLiteral($("#finalWords").html())));
+                        var dataSource = rdf.createBlankNode();
+                        g.add(rdf.createTriple(exercise, lodIdeNs("dataProcessing"), dataSource));
+                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"), 
+                                rdf.createLiteral($("#dataSource-taskDescription").html())));
+                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"), 
+                                rdf.createNamedNode($("#sourceURI-solution").html())));
+                        return rdf.serializers["text/turtle"].serialize(g).then(function(turtle) {
+                            return turtle;
+                        })
+                    }
+                    function lodIdeNs(localName) {
+                        return rdf.createNamedNode("http://ontology.lodide.io/"+localName);
+                    }
+                    function rdfNs(localName) {
+                        return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#"+localName);
+                    }
                 });
 
             });
@@ -337,7 +364,6 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        
         <div id="login-dialog" title="Login with GitHub">
             <ul>
                 <li><a href="#password-login">Password Login</a></li>
