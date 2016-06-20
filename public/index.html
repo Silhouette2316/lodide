@@ -81,7 +81,7 @@ and open the template in the editor.
                         {{/+lodide:taskDescription}}
                         <div>
                             Specify the URL from which to retrieve the RDF data:
-                            <input id="sourceURI" type="text" size="80" value="" />
+                            <input id="sourceURI" type="text" size="80" value="{{lodide:taskSolutionResourceCurrent}}" />
                         </div>
                         <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>'''
                 ]
@@ -286,6 +286,11 @@ and open the template in the editor.
                 }
                 
                 $('#personalAccessTokenLoginButton').click(function() {
+                    if ($('#saveCredentialForLater').prop("checked")) {
+                        localStorage.setItem("personalAccessToken", $('#personalAccessToken').val());
+                    } else {
+                        localStorage.removeItem("personalAccessToken");
+                    }
                     loginButtonAction({
                         token: $('#personalAccessToken').val(),
                     });
@@ -340,11 +345,13 @@ and open the template in the editor.
                         g.add(rdf.createTriple(exercise, lodIdeNs("finalWords"), 
                                 rdf.createLiteral($("#finalWords").html())));
                         var dataSource = rdf.createBlankNode();
-                        g.add(rdf.createTriple(exercise, lodIdeNs("dataProcessing"), dataSource));
+                        g.add(rdf.createTriple(exercise, lodIdeNs("dataSource"), dataSource));
                         g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"), 
                                 rdf.createLiteral($("#dataSource-taskDescription").html())));
                         g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"), 
                                 rdf.createNamedNode($("#sourceURI-solution").html())));
+                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"), 
+                                rdf.createLiteral($("#sourceURI").val())));
                         return rdf.serializers["text/turtle"].serialize(g).then(function(turtle) {
                             return turtle;
                         })
@@ -385,8 +392,14 @@ and open the template in the editor.
                         https://github.com/settings/tokens
                     </a>.
                     <label for="personalAccessToken">Personal Access Token:</label><input type="text" id="personalAccessToken" /><br />
-                    <label for="personalAccessToken">Save for later:</label><input type=checkbox id="saveCredentialForLater" /><br />
+                    <label for="saveCredentialForLater">Save for later:</label><input type=checkbox id="saveCredentialForLater" /><br />
                     <button id="personalAccessTokenLoginButton" type="button" class="btn btn-default">Login</button><br />
+                    <script>
+                      if (localStorage.getItem("personalAccessToken")) {
+                          $("#personalAccessToken").val(localStorage.getItem("personalAccessToken"));
+                          $("#saveCredentialForLater").prop('checked', true);
+                      }                                                    
+                    </script>
                 </div>
             </div>
         </div>
