@@ -81,7 +81,7 @@ and open the template in the editor.
                         {{/+lodide:taskDescription}}
                         <div>
                             Specify the URL from which to retrieve the RDF data:
-                            <input id="sourceURI" type="text" size="80" value="{{lodide:taskSolutionResourceCurrent}}" />
+                            <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />
                         </div>
                         <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>'''
                 ]
@@ -95,7 +95,7 @@ and open the template in the editor.
                     r2h:mustache '''<h2>Data Processing</h2>
                         {{#+lodide:taskDescription}}
                         <div class="exercise">
-                            {{{lodide:taskDescription}}}
+                            <span id="dataProcessing-taskDescription">{{{lodide:taskDescription}}}</span>
                             {{#lodide:taskSolutionCode}}
                             <button id="codeEditor-solution-button">Show solution</button>
                             {{/lodide:taskSolutionCode}}
@@ -104,7 +104,7 @@ and open the template in the editor.
                         <div>
                             Act on the data available as graph object <code>g</code>;
                         </div>
-                        <div id="codeEditor" class="editor"></div>
+                        <div id="codeEditor" class="editor">{{{lodide:taskSolutionCodeCurrent}}}</div>
                         <div style="display: none" id="codeEditor-solution">{{lodide:taskSolutionCode}}</div>'''
                 ]
             ].
@@ -118,16 +118,16 @@ and open the template in the editor.
                     r2h:mustache '''<h2>Data Rendering</h2>
                         {{#+lodide:taskDescription}}
                         <div class="exercise">
-                            {{{lodide:taskDescription}}}
+                            <span id="dataRendering-taskDescription">{{{lodide:taskDescription}}}</span>
                             {{#lodide:taskSolutionResource}}
                             <button id="rendering-solution-button">Show solution</button>
                             {{/lodide:taskSolutionResource}}
                         </div>
                         {{/+lodide:taskDescription}}
                         <div>Render a resource using RDF2h matchers.</div>
-                        <div>Resource: <input id="rendering-resource" type="text" size="80" value="" /></div>
+                        <div>Resource: <input id="rendering-resource" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" /></div>
                         <div>RDF2h matchers:</div>
-                        <div id="matchersEditor" class="editor"></div>
+                        <div id="matchersEditor" class="editor">{{{lodide:taskSolutionCodeCurrent}}}</div>
                         <div style="display: none" id="rendering-resource-solution">{{lodide:taskSolutionResource}}</div>
                         <div style="display: none" id="matchersEditor-solution">{{lodide:taskSolutionCode}}</div>'''
                 ]
@@ -158,12 +158,18 @@ and open the template in the editor.
                 LD2h.expand();
                 //This a hack because we don't know when LD2h is finished
                 window.setTimeout(function() {
-                    var codeEditor = CodeMirror($("#codeEditor")[0], {
+                    var codeEditorValue = $("#codeEditor").html();
+                    $("#codeEditor").html("");
+                    var codeEditorCM = CodeMirror($("#codeEditor")[0], {
                         mode: "javascript"
                     });
-                    var matchersEditor = CodeMirror($("#matchersEditor")[0], {
+                    codeEditorCM.setValue(codeEditorValue);
+                    var matchersEditorValue = $("#matchersEditor").html();
+                    $("#matchersEditor").html("")
+                    var matchersEditorCM = CodeMirror($("#matchersEditor")[0], {
                         mode: "turtle"
                     });
+                    matchersEditorCM.setValue(matchersEditorValue);
                     var run = function() {
                         var sourceURI = $("#sourceURI").val();
                         var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
@@ -185,10 +191,10 @@ and open the template in the editor.
                                 } else {
                                     console.log("Got graph of size "+g.length+" from "+sourceURI);
                                 }
-                                var code = codeEditor.getValue();
+                                var code = codeEditorCM.getValue();
                                 eval(code);
                                 var resource = rdf.createNamedNode($("#rendering-resource").val());
-                                var matchersTurtle = matchersEditor.getValue();
+                                var matchersTurtle = matchersEditorCM.getValue();
                                 if (matchersTurtle.length > 0) {
                                     turtleParser.parse(matchersTurtle).then(function (matchers) {
                                         var renderingResult = new RDF2h(matchers).render(
@@ -207,162 +213,186 @@ and open the template in the editor.
                     });
                     $("#codeEditor-solution-button").on("click", function() {
                         var message = "Confirm that you would like to see the solution.";
-                        if (codeEditor.getValue().trim().length > 0) {
+                        if (codeEditorCM.getValue().trim().length > 0) {
                             message += "\nWARNING: The code that you've already entered will be gone forever.";
                         }
                         if (confirm(message)) {
-                            codeEditor.setValue($("#codeEditor-solution").text().trim());
+                            codeEditorCM.setValue($("#codeEditor-solution").text().trim());
                         }
                     });
                     $("#rendering-solution-button").on("click", function() {
                         var message = "Confirm that you would like to see the solution.";
-                        if (matchersEditor.getValue().trim().length > 0) {
+                        if (matchersEditorCM.getValue().trim().length > 0) {
                             message += "\nWARNING: That code that you've already entered will be forever lost.";
                         }
                         if (confirm(message)) {
                             $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
-                            matchersEditor.setValue($("#matchersEditor-solution").text().trim());
+                            matchersEditorCM.setValue($("#matchersEditor-solution").text().trim());
+                        }
+                    });
+                
+
+                    $.fn.tabbedDialog = function () {
+                        this.tabs();
+                        this.dialog({'modal':true,'minWidth':800, 'minHeight':300,'draggable':true});
+                    };
+
+
+                    updateLogginStatus();
+
+
+
+
+                    function updateLogginStatus() {
+                        if (profile) {
+                            $('.authenticatedOnly').show();
+                            $('#login-div').html('<img src="'+profile.avatar_url+' width="20" height="20" />Logged in as '+profile.login+' (<a id="logout-link" href="#login">Logout</a>)');
+                            $('#logout-link').click(function() {
+                                profile = null;
+                                updateLogginStatus();
+                                return false;
+                            });
+                            var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
+                            repo.getTree("master").then(function(r) { 
+                                var tree = r.data.tree
+                                //for (var i = 0; i < tree.length;i++) {
+                                //    var e = tree[i];
+                                tree.forEach(function(e) {
+                                    console.log(e);
+                                    repo.getContents('master', e.path, 'raw').then(function(response) {
+                                       console.log("Contents of: "+e.path);
+                                       console.log(response.data);
+                                    });
+                                });
+                            }).catch(function(e) { 
+                                alert("e: "+e);
+                            });
+                        } else {
+                            $('.authenticatedOnly').hide();
+                            $('#login-div').html('<a id="login-link" href="#login">Login with GitHub</a>');
+                            $('#login-link').click(function() {
+                                $('#login-dialog').tabbedDialog();
+                                return false;
+                            });
+                        }
+                    }
+
+                    var loginButtonAction = function(auth) {
+                        gh = new GitHub(auth);
+                        var user = gh.getUser();
+                        console.log(user);
+                        user.getProfile().then(function(response) {
+                            profile = response.data;
+                            console.log(profile);
+                            updateLogginStatus();
+                            $('#login-dialog').dialog("close");
+                        });
+
+
+                    }
+
+                    $('#personalAccessTokenLoginButton').click(function() {
+                        if ($('#saveCredentialForLater').prop("checked")) {
+                            localStorage.setItem("personalAccessToken", $('#personalAccessToken').val());
+                        } else {
+                            localStorage.removeItem("personalAccessToken");
+                        }
+                        loginButtonAction({
+                            token: $('#personalAccessToken').val(),
+                        });
+                    });
+
+                    $('#passwordLoginButton').click(function() {
+                        loginButtonAction({
+                            'username' : $('#userName').val(),
+                            'password' : $('#password').val()
+                        });
+                    });
+
+                    $("#saveButton").click(function() {
+                        $("#fileNameDialog").modal("show");
+                    });
+
+                    $("#saveButton2").click(function() {
+                        var fileName = $("#fileName").val();
+                        if (!fileName.endsWith(".ttl")) {
+                            fileName = fileName + ".ttl";
+                        }
+                        var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
+                        repo.listBranches().then(writeFile).catch(function(e) {
+                            console.log("failed to write file, will attempt to create repo");
+                            console.log(e);
+                           //create new repository
+                           gh.getUser().createRepo({
+                            "name": "lodide-saved-contents",
+                            "description": "A repository for saving http://lodide.io/ projects.",
+                            "homepage": "http://lodide.io/",
+                            "private": false,
+                            "has_issues": false,
+                            "has_wiki": false,
+                            "has_downloads": false
+                          }).then(writeFile)
+                                  .catch(function(a) {alert("error: "+a)});
+                        });
+                        function writeFile() {
+                            serializeCurrentState().then(function(fileContent) {
+                                repo.writeFile('master', fileName, fileContent, 
+                                    "Run it on http://lodide.io/?exercise=https://raw.githubusercontent.com/"+profile.login+"/lodide-saved-contents/master/"+fileName, {}).then(function(r) {
+                                    alert("saved file: "+fileName);
+                                    console.log(r);
+                                 });
+                             });
+                        }
+                        function serializeCurrentState() {
+                            var g = new rdf.Graph();
+                            var exercise = rdf.createNamedNode(""); //rdf-ext supports relative IRIs
+                            g.add(rdf.createTriple(exercise, rdfNs("type"), lodIdeNs("Exercise")));
+                            g.add(rdf.createTriple(exercise, lodIdeNs("intro"), rdf.createLiteral($("#intro").html())));
+                            g.add(rdf.createTriple(exercise, lodIdeNs("finalWords"), 
+                                    rdf.createLiteral($("#finalWords").html())));
+                            var dataSource = rdf.createBlankNode();
+                            g.add(rdf.createTriple(exercise, lodIdeNs("dataSource"), dataSource));
+                            g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"), 
+                                    rdf.createLiteral($("#dataSource-taskDescription").html())));
+                            g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"), 
+                                    rdf.createNamedNode($("#sourceURI-solution").html())));
+                            g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"), 
+                                    rdf.createLiteral($("#sourceURI").val())));
+                            var dataProcessing = rdf.createBlankNode();
+                            g.add(rdf.createTriple(exercise, lodIdeNs("dataProcessing"), dataProcessing));
+                            g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskDescription"), 
+                                    rdf.createLiteral($("#dataProcessing-taskDescription").html())));
+                            g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCode"), 
+                                    rdf.createLiteral($("#codeEditor-solution").html())));
+                            g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCodeCurrent"), 
+                                    rdf.createLiteral(codeEditorCM.getValue())));
+                            var dataRendering = rdf.createBlankNode();
+                            g.add(rdf.createTriple(exercise, lodIdeNs("dataRendering"), dataRendering));
+                            g.add(rdf.createTriple(dataRendering, lodIdeNs("taskDescription"), 
+                                    rdf.createLiteral($("#dataRendering-taskDescription").html())));
+                            g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCode"), 
+                                    rdf.createLiteral($("#matchersEditor-solution").html())));
+                            g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCodeCurrent"), 
+                                    rdf.createLiteral(matchersEditorCM.getValue())));
+                            g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResource"), 
+                                    rdf.createNamedNode($("#rendering-resource-solution").html())));
+                            g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResourceCurrent"), 
+                                    rdf.createLiteral($("#rendering-resource").val())));
+                            return rdf.serializers["text/turtle"].serialize(g).then(function(turtle) {
+                                return turtle;
+                            }).catch(function(e) {
+                                console.log("Error serializing:");
+                                console.log(e);
+                            })
+                        }
+                        function lodIdeNs(localName) {
+                            return rdf.createNamedNode("http://ontology.lodide.io/"+localName);
+                        }
+                        function rdfNs(localName) {
+                            return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#"+localName);
                         }
                     });
                 }, 300);
-
-                $.fn.tabbedDialog = function () {
-                    this.tabs();
-                    this.dialog({'modal':true,'minWidth':800, 'minHeight':300,'draggable':true});
-                };
-
-
-                updateLogginStatus();
-
-                
-                
-                
-                function updateLogginStatus() {
-                    if (profile) {
-                        $('.authenticatedOnly').show();
-                        $('#login-div').html('<img src="'+profile.avatar_url+' width="20" height="20" />Logged in as '+profile.login+' (<a id="logout-link" href="#login">Logout</a>)');
-                        $('#logout-link').click(function() {
-                            profile = null;
-                            updateLogginStatus();
-                            return false;
-                        });
-                        var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
-                        repo.getTree("master").then(function(r) { 
-                            var tree = r.data.tree
-                            //for (var i = 0; i < tree.length;i++) {
-                            //    var e = tree[i];
-                            tree.forEach(function(e) {
-                                console.log(e);
-                                repo.getContents('master', e.path, 'raw').then(function(response) {
-                                   console.log("Contents of: "+e.path);
-                                   console.log(response.data);
-                                });
-                            });
-                        }).catch(function(e) { 
-                            alert("e: "+e);
-                        });
-                    } else {
-                        $('.authenticatedOnly').hide();
-                        $('#login-div').html('<a id="login-link" href="#login">Login with GitHub</a>');
-                        $('#login-link').click(function() {
-                            $('#login-dialog').tabbedDialog();
-                            return false;
-                        });
-                    }
-                }
-                
-                var loginButtonAction = function(auth) {
-                    gh = new GitHub(auth);
-                    var user = gh.getUser();
-                    console.log(user);
-                    user.getProfile().then(function(response) {
-                        profile = response.data;
-                        console.log(profile);
-                        updateLogginStatus();
-                        $('#login-dialog').dialog("close");
-                    });
-                    
-                    
-                }
-                
-                $('#personalAccessTokenLoginButton').click(function() {
-                    if ($('#saveCredentialForLater').prop("checked")) {
-                        localStorage.setItem("personalAccessToken", $('#personalAccessToken').val());
-                    } else {
-                        localStorage.removeItem("personalAccessToken");
-                    }
-                    loginButtonAction({
-                        token: $('#personalAccessToken').val(),
-                    });
-                });
-                
-                $('#passwordLoginButton').click(function() {
-                    loginButtonAction({
-                        'username' : $('#userName').val(),
-                        'password' : $('#password').val()
-                    });
-                });
-                
-                $("#saveButton").click(function() {
-                    $("#fileNameDialog").modal("show");
-                });
-                
-                $("#saveButton2").click(function() {
-                    var fileName = $("#fileName").val();
-                    if (!fileName.endsWith(".ttl")) {
-                        fileName = fileName + ".ttl";
-                    }
-                    var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
-                    repo.listBranches().then(writeFile).catch(function(e) {
-                        console.log("failed to write file, will attempt to create repo");
-                        console.log(e);
-                       //create new repository
-                       gh.getUser().createRepo({
-                        "name": "lodide-saved-contents",
-                        "description": "A repository for saving http://lodide.io/ projects.",
-                        "homepage": "http://lodide.io/",
-                        "private": false,
-                        "has_issues": false,
-                        "has_wiki": false,
-                        "has_downloads": false
-                      }).then(writeFile)
-                              .catch(function(a) {alert("error: "+a)});
-                    });
-                    function writeFile() {
-                        serializeCurrentState().then(function(fileContent) {
-                            repo.writeFile('master', fileName, fileContent, 
-                                "Run it on http://lodide.io/?exercise=https://raw.githubusercontent.com/"+profile.login+"/lodide-saved-contents/master/"+fileName, {}).then(function(r) {
-                                alert("saved file: "+fileName);
-                                console.log(r);
-                             });
-                         });
-                    }
-                    function serializeCurrentState() {
-                        var g = new rdf.Graph();
-                        var exercise = rdf.createNamedNode(""); //rdf-ext supports relative IRIs
-                        g.add(rdf.createTriple(exercise, rdfNs("type"), lodIdeNs("Exercise")));
-                        g.add(rdf.createTriple(exercise, lodIdeNs("intro"), rdf.createLiteral($("#intro").html())));
-                        g.add(rdf.createTriple(exercise, lodIdeNs("finalWords"), 
-                                rdf.createLiteral($("#finalWords").html())));
-                        var dataSource = rdf.createBlankNode();
-                        g.add(rdf.createTriple(exercise, lodIdeNs("dataSource"), dataSource));
-                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"), 
-                                rdf.createLiteral($("#dataSource-taskDescription").html())));
-                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"), 
-                                rdf.createNamedNode($("#sourceURI-solution").html())));
-                        g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"), 
-                                rdf.createLiteral($("#sourceURI").val())));
-                        return rdf.serializers["text/turtle"].serialize(g).then(function(turtle) {
-                            return turtle;
-                        })
-                    }
-                    function lodIdeNs(localName) {
-                        return rdf.createNamedNode("http://ontology.lodide.io/"+localName);
-                    }
-                    function rdfNs(localName) {
-                        return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#"+localName);
-                    }
-                });
 
             });
 
