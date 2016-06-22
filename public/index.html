@@ -16,8 +16,9 @@ and open the template in the editor.
         <!-- <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" /> -->
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
         <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+        <script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
         <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.3.0/dist/ld2h.js"></script>
+        <script src="//cdn.rawgit.com/rdf2h/ld2h/v0.4.1/dist/ld2h.js"></script>
         <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.js"></script>
         <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
@@ -155,9 +156,7 @@ and open the template in the editor.
                 if (exerciseParam) {
                     $("#exercise").attr("resource", exerciseParam);
                 }
-                LD2h.expand();
-                //This a hack because we don't know when LD2h is finished
-                window.setTimeout(function() {
+                LD2h.expand().then(function() {
                     var codeEditorValue = $("#codeEditor").html();
                     $("#codeEditor").html("");
                     var codeEditorCM = CodeMirror($("#codeEditor")[0], {
@@ -392,7 +391,7 @@ and open the template in the editor.
                             return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#"+localName);
                         }
                     });
-                }, 300);
+                });
 
             });
 
