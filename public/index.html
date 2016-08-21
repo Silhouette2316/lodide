@@ -229,23 +229,15 @@ $(function () {
             });
             var getData = function() {
                 if ($('#rdfSource-uri').is(":visible")) {
-                    return new Promise(function(resolve, reject) {
-                        store.match(
+                    return store.match(
                         null,
                         null,
                         null,
-                        sourceURI,
-                        function (error, g) {
-                            if (!g) {
-                                console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
-                                reject();
-                            } else {
-                                console.log("Got graph of size " + g.length + " from " + sourceURI);
-                                resolve(g);
-                            }
+                        sourceURI).catch(
+                        function (error) {
+                            console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
                         });   
                     
-                    });
                 } else {
                     var turtle = rdfDataEditorCM.getValue();
                     return turtleParser.parse(turtle, undefined, "http://example.org/");
