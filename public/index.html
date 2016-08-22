@@ -189,15 +189,18 @@ $(function () {
     }
     LD2h.expand().then(function () {
         var rdfDataEditorValue = $("#rdfDataEditor").html();
-        if (rdfDataEditorValue.trim().length > 0) {
+        if (rdfDataEditorValue && (rdfDataEditorValue.trim().length > 0)) {
             setRdfSourceType("directInput");
         }
         $("#rdfDataEditor").html("")
         var rdfDataEditorCM = CodeMirror($("#rdfDataEditor")[0], {
             mode: "turtle"
         });
-        rdfDataEditorCM.setValue(rdfDataEditorValue);
-        if ($("#sourceURI").val().trim().length > 0) {
+        if (rdfDataEditorValue) {
+            rdfDataEditorCM.setValue(rdfDataEditorValue);
+        }
+        var sourceUriValue = $("#sourceURI").val();
+        if (sourceUriValue && (sourceUriValue.trim().length > 0)) {
             setRdfSourceType("uri");
         }
         
