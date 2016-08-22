@@ -89,13 +89,14 @@
                             </select>
                             <button type="button" id="setRdfSource" class="btn btn-success">Set</button>
                         </div>
-                        <div style="display: none" id="rdfSource-uri" class="dataSource">
+                        <div style="display: none" id="rdfSource-uri" class="dataSource>
                             Specify the URL from which to retrieve the RDF data:
                             <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />
                         </div>
+                        
                         <div style="display: none" id="rdfSource-directInput" class="dataSource">
                             Enter the RDF data:
-                            <div id="rdfDataEditor" class="editor">{{{lodide:taskSolutionCodeCurrent}}}</div>
+                            <div id="rdfDataEditor" class="editor"></div>
                             <div id="sourceEditor-solution">{{lodide:taskSolutionCode}}</div>
                         </div>
                         <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>
@@ -115,6 +116,19 @@
                         });
                         \u003C/script>
                 
+                        <script>
+                            var rdfDataEditorValue = "{{{lodide:taskSolutionCodeCurrent}}}";
+                            if (rdfDataEditorValue && (rdfDataEditorValue.trim().length > 0)) {
+                                setRdfSourceType("directInput");
+                            }
+                            $("#rdfDataEditor").html("")
+                            var rdfDataEditorCM = CodeMirror($("#rdfDataEditor")[0], {
+                                mode: "turtle"
+                            });
+                            if (rdfDataEditorValue) {
+                                rdfDataEditorCM.setValue(rdfDataEditorValue);
+                            }
+                        \u003C/script>
                          '''
                 ]
             ].
@@ -188,17 +202,7 @@ $(function () {
         $("#exercise").attr("resource", exerciseParam);
     }
     LD2h.expand().then(function () {
-        var rdfDataEditorValue = $("#rdfDataEditor").html();
-        if (rdfDataEditorValue && (rdfDataEditorValue.trim().length > 0)) {
-            setRdfSourceType("directInput");
-        }
-        $("#rdfDataEditor").html("")
-        var rdfDataEditorCM = CodeMirror($("#rdfDataEditor")[0], {
-            mode: "turtle"
-        });
-        if (rdfDataEditorValue) {
-            rdfDataEditorCM.setValue(rdfDataEditorValue);
-        }
+        
         var sourceUriValue = $("#sourceURI").val();
         if (sourceUriValue && (sourceUriValue.trim().length > 0)) {
             setRdfSourceType("uri");
