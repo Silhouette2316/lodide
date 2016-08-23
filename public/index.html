@@ -117,7 +117,7 @@
                         \u003C/script>
                 
                         <script>
-                            var rdfDataEditorValue = "{{{lodide:taskSolutionCodeCurrent}}}";
+                            var rdfDataEditorValue = `{{{lodide:taskSolutionCodeCurrent}}}`;
                             if (rdfDataEditorValue && (rdfDataEditorValue.trim().length > 0)) {
                                 setRdfSourceType("directInput");
                             }
@@ -150,7 +150,7 @@
                         <div>
                             Act on the data available as graph object <code>g</code>;
                         </div>
-                        <div id="codeEditor" class="editor">{{{lodide:taskSolutionCodeCurrent}}}</div>
+                        <div id="codeEditor" class="editor">{{lodide:taskSolutionCodeCurrent}}</div>
                         <div style="display: none" id="codeEditor-solution">{{lodide:taskSolutionCode}}</div>'''
                 ]
             ].
@@ -173,7 +173,7 @@
                         <div>Render a resource using RDF2h matchers.</div>
                         <div>Resource: <input id="rendering-resource" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" /></div>
                         <div>RDF2h matchers:</div>
-                        <div id="matchersEditor" class="editor">{{{lodide:taskSolutionCodeCurrent}}}</div>
+                        <div id="matchersEditor" class="editor">{{lodide:taskSolutionCodeCurrent}}</div>
                         <div style="display: none" id="rendering-resource-solution">{{lodide:taskSolutionResource}}</div>
                         <div style="display: none" id="matchersEditor-solution">{{lodide:taskSolutionCode}}</div>'''
                 ]
@@ -203,12 +203,18 @@ $(function () {
     }
     LD2h.expand().then(function () {
         
+        function ampDecode(encoded) {
+            var elem = document.createElement('textarea');
+            elem.innerHTML = encoded;
+            return elem.value;
+        }
+        
         var sourceUriValue = $("#sourceURI").val();
         if (sourceUriValue && (sourceUriValue.trim().length > 0)) {
             setRdfSourceType("uri");
         }
         
-        var codeEditorValue = $("#codeEditor").html();
+        var codeEditorValue = ampDecode($("#codeEditor").html());
         $("#codeEditor").html("");
         var codeEditorCM = CodeMirror($("#codeEditor")[0], {
             mode: "javascript"
@@ -216,7 +222,7 @@ $(function () {
         if (codeEditorValue) {
             codeEditorCM.setValue(codeEditorValue);
         }
-        var matchersEditorValue = $("#matchersEditor").html();
+        var matchersEditorValue = ampDecode($("#matchersEditor").html());
         $("#matchersEditor").html("")
         var matchersEditorCM = CodeMirror($("#matchersEditor")[0], {
             mode: "turtle"
