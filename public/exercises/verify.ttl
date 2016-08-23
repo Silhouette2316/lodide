@@ -1,0 +1,20 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdfa: <http://www.w3.org/ns/rdfa#>.
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#>.
+@prefix s: <http://schema.org/>.
+@prefix lodide: <http://ontology.lodide.io/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix schema: <http://schema.org/>.
+
+<> a lodide:Exercise;
+    lodide:intro "<h2>Verify a statement</h2>\n            <p>In this exercise you write a triple that is then verified against information on the web.</p>";
+    lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
+    lodide:dataSource _:b16.
+_:b16 lodide:taskSolutionCodeCurrent "<http://www.w3.org/2000/01/rdf-schema#Class> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class>.".
+<> lodide:dataProcessing _:b17.
+_:b17 lodide:taskSolutionCode "";
+    lodide:taskSolutionCodeCurrent "var triples = g.toArray();\nif (triples.length != 1) {\n\talert(\"Input graph must be exactly one triple\");\n    throw \"wrong size\";\n}\nvar triple = triples[0];\nvar subject = triple.subject;\nvar baseURI = subject.toString().split(\"#\")[0];\nstore.match(null,null,null,baseURI).then(function(subjectDescriptionGraph) {\n  var found = false;\n  subjectDescriptionGraph.forEach(function(t) {\n    if ((t.subject.equals(triple.subject)) \n        && (t.predicate.equals(triple.predicate))\n        && (t.object.equals(triple.object))) {\n        \tfound = true;\n        }\n  });\n  if (found) {\n  \talert(\"Your statement is true based on information found on \"+baseURI);\n  } else {\n    alert(\"Sorry, we couln't confirm your statement!\");\n  }\n});\n".
