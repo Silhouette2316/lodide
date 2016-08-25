@@ -262,9 +262,12 @@ $(function () {
                     try {
                         var result = eval(code); 
                     } catch (e) {
-                        if ((e instanceof SyntaxError) 
-                           || (e instanceof ReferenceError)) {
-                            alert(e.message+" on line "+e.lineNumber);
+                        if ((e instanceof ReferenceError) || 
+                                (e instanceof SyntaxError) || 
+                                (e instanceof TypeError)) {
+                            alert(e.constructor.name+
+                                   (e.lineNumber? " on line "+e.lineNumber: "")+
+                                   ": "+e.message);
                         } else {
                             throw( e );
                         }
