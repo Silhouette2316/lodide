@@ -466,7 +466,7 @@ $(function () {
                 }
                 var dataProcessing = rdf.createBlankNode();
                 g.add(rdf.createTriple(exercise, lodIdeNs("dataProcessing"), dataProcessing));
-                if ($("#dataSource-taskDescription").length > 0) {
+                if ($("#dataProcessing-taskDescription").length > 0) {
                     g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskDescription"),
                             rdf.createLiteral($("#dataProcessing-taskDescription").html())));
                 }
