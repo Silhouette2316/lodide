@@ -97,7 +97,7 @@
                         <div style="display: none" id="rdfSource-directInput" class="dataSource">
                             Enter the RDF data:
                             <div id="rdfDataEditor" class="editor"></div>
-                            <div id="sourceEditor-solution">{{lodide:taskSolutionCode}}</div>
+                            <div id="sourceEditor-solution" style="display: none">{{lodide:taskSolutionCode}}</div>
                         </div>
                         <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>
                         <script>
@@ -302,8 +302,8 @@ $(function () {
                     setRdfSourceType("uri")
                 }
             } else {
+                setRdfSourceType("directInput");
                 rdfDataEditorCM.setValue($("#sourceEditor-solution").text().trim());
-                setRdfSourceType("directInput")
             }
         });
         $("#codeEditor-solution-button").on("click", function () {
