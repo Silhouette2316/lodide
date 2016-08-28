@@ -253,7 +253,11 @@ $(function () {
                     
                 } else {
                     var turtle = rdfDataEditorCM.getValue();
-                    return turtleParser.parse(turtle, undefined, "http://example.org/");
+                    return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function(e) {
+                        console.log(e);
+                        alert("Could not parse Turtle: "+e.constructor.name);
+                        throw "Parsing failed";
+                    });
                 }
             };
             getData().then(function(g) {  
