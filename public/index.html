@@ -161,7 +161,7 @@
                     r2h:object r2h:this;
                 ];
                 r2h:template [ 
-                    r2h:mustache '''<h2>Data Rendering</h2>
+                    r2h:mustache '''<h2 id="dataRenderingTitle">Data Rendering</h2>
                         {{#+lodide:taskDescription}}
                         <div class="exercise">
                             <span id="dataRendering-taskDescription">{{{lodide:taskDescription}}}</span>
@@ -236,7 +236,7 @@ $(function () {
             var store = new LdpStore({
                 parsers: new LdpStore.ParserUtil({
                     'text/turtle': turtleParser,
-                    'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
+                    //'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
                     'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
                 })
             });
@@ -434,6 +434,10 @@ $(function () {
                         alert("saved file: " + fileName);
                         console.log(r);
                     });
+                }).catch(function (e) {
+                    console.log("Error serializing:");
+                    console.log(e);
+                    alert("Serialization failed, see log");
                 });
             }
             function serializeCurrentState() {
@@ -470,26 +474,25 @@ $(function () {
                         rdf.createLiteral($("#codeEditor-solution").html())));               
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCodeCurrent"),
                         rdf.createLiteral(codeEditorCM.getValue())));
-                var dataRendering = rdf.createBlankNode();
-                g.add(rdf.createTriple(exercise, lodIdeNs("dataRendering"), dataRendering));
-                if ($("#dataRendering-taskDescription").length > 0) {
-                    g.add(rdf.createTriple(dataRendering, lodIdeNs("taskDescription"),
-                            rdf.createLiteral($("#dataRendering-taskDescription").html())));
+                if ($("#dataRenderingTitle").length > 0) {
+                    var dataRendering = rdf.createBlankNode();
+                    g.add(rdf.createTriple(exercise, lodIdeNs("dataRendering"), dataRendering));
+                    if ($("#dataRendering-taskDescription").length > 0) {
+                        g.add(rdf.createTriple(dataRendering, lodIdeNs("taskDescription"),
+                                rdf.createLiteral($("#dataRendering-taskDescription").html())));
+                    }
+                    g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCode"),
+                            rdf.createLiteral($("#matchersEditor-solution").html())));
+                    g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCodeCurrent"),
+                            rdf.createLiteral(matchersEditorCM.getValue())));
+                    g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResource"),
+                            rdf.createNamedNode($("#rendering-resource-solution").html())));
+                    g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResourceCurrent"),
+                            rdf.createLiteral($("#rendering-resource").val())));
                 }
-                g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCode"),
-                        rdf.createLiteral($("#matchersEditor-solution").html())));
-                g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCodeCurrent"),
-                        rdf.createLiteral(matchersEditorCM.getValue())));
-                g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResource"),
-                        rdf.createNamedNode($("#rendering-resource-solution").html())));
-                g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResourceCurrent"),
-                        rdf.createLiteral($("#rendering-resource").val())));
                 return rdf.serializers["text/turtle"].serialize(g).then(function (turtle) {
                     return turtle;
-                }).catch(function (e) {
-                    console.log("Error serializing:");
-                    console.log(e);
-                })
+                });
             }
             function lodIdeNs(localName) {
                 return rdf.createNamedNode("http://ontology.lodide.io/" + localName);
