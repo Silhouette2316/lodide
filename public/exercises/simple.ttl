@@ -1,0 +1,68 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdfa: <http://www.w3.org/ns/rdfa#>.
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#>.
+@prefix s: <http://schema.org/>.
+@prefix lodide: <http://ontology.lodide.io/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix schema: <http://schema.org/>.
+
+<> a lodide:Exercise;
+    lodide:intro "<h2>Write an RDF Graph</h2>\n            <p>In this exercise you write a simple graph with two statements (triples).</p>";
+    lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your graph.</li>\n                </ul>";
+    lodide:dataSource [
+        lodide:taskDescription """<div>The simples way to write an RDF Graph is by 
+                using the <a href="https://www.w3.org/TR/n-triples/">N-Triples</a> 
+                syntax. In N-Triples every triple, i.e. every edge of the graph,
+                is serialized by a line terminated by a dot (<code>.</code>). 
+                The elements of a triple (subject, predicate and object) are separated
+                by spaces, URIs are enclosed by '<code>&lt;</code>' and '<code>></code>', literals by double 
+                quotes (<code>"</code>).
+                </div>
+                <div>
+                Write a graph (choose "Direct RDF Input") that states that:<ul>
+                    <li>The resource with the URI <code>http://example.org/alice</code> is of type <code>http://xmlns.com/foaf/0.1/Person</code></li>
+                    <li>The resource has the given name (<code>http://xmlns.com/foaf/0.1/givenName</code>) "Alice"</li>
+                </ul> 
+                Note: in RDF the type is indicate using the property <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</code>.
+            </div>
+            """;
+        lodide:taskSolutionCode """<http://example.org/alice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.
+<http://example.org/alice> <http://xmlns.com/foaf/0.1/givenName> "Alice"."""
+    ].
+<> lodide:dataProcessing [
+    lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea. The code loads RDF data using the URI of the subject and 
+                                checks if it finds the triple provided above in this graph.""";
+    lodide:taskSolutionCodeCurrent """var triples = g.toArray();
+if (g.length != 2) {
+	alert("The graph mus consist of two triples");
+    throw "wrong size";
+}
+g.forEach(function(t) {
+    if (!t.subject.equals(rdf.createNamedNode("http://example.org/alice"))) {
+      alert("Triple has wrong subject");
+      throw "wrong graph";
+    }
+    if (t.predicate.equals(rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))) {
+      if (!t.object.equals(rdf.createNamedNode("http://xmlns.com/foaf/0.1/Person"))) {
+        alert("Triple has wrong object");
+        throw "wrong graph";
+      }
+    } else {
+      if (t.predicate.equals(rdf.createNamedNode("http://xmlns.com/foaf/0.1/givenName"))) {
+        if (!t.object.equals(rdf.createLiteral("Alice"))) {
+          alert("Triple has wrong object");
+          throw "wrong graph";
+        }
+      } else {
+        alert("Triple has wrong predicate");
+        throw "wrong graph";
+      }
+    }
+  })
+  alert("This looks about right.");
+"""
+].

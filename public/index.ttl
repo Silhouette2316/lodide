@@ -4,6 +4,10 @@
 <> a lodide:Index;
    lodide:elements (
     [
+        lodide:exercise <exercises/simple.ttl>;
+        schema:description "A simple exercise to get you started"
+    ]
+    [
         lodide:exercise <exercises/verify.ttl>;
         schema:description "Is a triple true according to the web?"
     ]
