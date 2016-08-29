@@ -37,7 +37,7 @@
     lodide:taskDescription """In this exercise nothing needs to be done here. The code below verifies the entered RDF data. Press the "Run my code"-Button below.""";
     lodide:taskSolutionCodeCurrent """var triples = g.toArray();
 if (g.length != 2) {
-	alert("The graph mus consist of two triples");
+	alert("The graph must consist of two triples");
     throw "wrong size";
 }
 g.forEach(function(t) {
