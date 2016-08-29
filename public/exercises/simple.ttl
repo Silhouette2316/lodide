@@ -34,8 +34,7 @@
 <http://example.org/alice> <http://xmlns.com/foaf/0.1/givenName> "Alice"."""
     ].
 <> lodide:dataProcessing [
-    lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea. The code loads RDF data using the URI of the subject and 
-                                checks if it finds the triple provided above in this graph.""";
+    lodide:taskDescription """In this exercise nothing needs to be done here. The code below verifies the entered RDF data. Press the "Run my code"-Button below.""";
     lodide:taskSolutionCodeCurrent """var triples = g.toArray();
 if (g.length != 2) {
 	alert("The graph mus consist of two triples");

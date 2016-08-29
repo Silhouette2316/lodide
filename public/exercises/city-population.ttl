@@ -3,7 +3,7 @@
 
 <> a lodide:Exercise;
     lodide:intro """<h2>City population</h2>
-            <p>In this exercise you will get a very simple piece of data from DbPedia.</p>""";
+            <p>In this exercise you will get a very simple piece of data from DBpedia.</p>""";
     lodide:finalWords """<ul>
                     <li>When you're finished press the "Run my code"-button to
                     run your code.
