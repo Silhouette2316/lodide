@@ -574,12 +574,14 @@ $(function () {
         });
     });
     
-    $("#exerciseIndexLink").click(function() {
+    $(".exerciseIndexLink").click(function() {
         var contentArea = $("#exercise");
         contentArea.addClass("fetch");
         contentArea.attr("resource", "index.ttl");
         LD2h.expand();
         window.history.pushState({},"", "exercise-index.html");
+        $("#lodIDEMenu").removeClass("active");
+        $("#exerciseIndexMenu").addClass("active");
     });
 
 });
@@ -658,8 +660,8 @@ $(function () {
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">LodIDE</a></li>
-                        <li><a id="exerciseIndexLink">Exercises/Examples</a></li>
+                        <li id="lodIDEMenu" class="active"><a href="#">LodIDE</a></li>
+                        <li id="exerciseIndexMenu"><a class="exerciseIndexLink">Exercises/Examples</a></li>
                         <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li> -->
