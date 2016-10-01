@@ -54,6 +54,7 @@
                     r2h:predicate lodide:intro;
                 ];
                 r2h:template [ 
+                    r2h:context r2h:Default;
                     r2h:mustache '''<span id="intro">{{{lodide:intro}}}</span><br/>
                                     {{{:render lodide:dataSource}}}<br>
                                     {{{:render lodide:dataProcessing}}}<br>
@@ -191,7 +192,7 @@
                   r2h:mustache """<h1>LodIde</h1>
                     <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
                         <ul>
-                            {{{:render lodide:elements}}}
+                            {{{:render lodide:elements lodide:index}}}
                         </ul>"""
                 ]
             ].
@@ -202,7 +203,7 @@
                   r2h:object lodide:Exercise;
                 ];
                 r2h:template [ 
-                  r2h:context r2h:Default;
+                  r2h:context lodide:index;
                   r2h:mustache "{{{lodide:intro}}}"
                 ]
             ].
@@ -213,7 +214,7 @@
                   r2h:object rdf:nil
                 ];
                 r2h:template [ 
-                  r2h:context r2h:Default;
+                  r2h:context lodide:index;
                   r2h:mustache '''
               <li class="exercise-index">{{{:render rdf:first}}}</li> 
                   '''
@@ -225,7 +226,7 @@
                       r2h:predicate rdf:first
                     ];
                     r2h:template [ 
-                      r2h:context r2h:Default;
+                      r2h:context lodide:index;
                       r2h:mustache '''
                   <li class="exercise-index">{{{:render rdf:first}}}</li> 
                   {{{:render rdf:rest}}}
@@ -238,10 +239,10 @@
                   r2h:predicate lodide:exercise;
                 ];
                 r2h:template [ 
-                  r2h:context r2h:Default;
+                  r2h:context lodide:index;
                   r2h:mustache """
                         {{{schema:description}}}:
-                        <div class="fetch" resource="{{{lodide:exercise}}}">More info about exercise will show up here</div>
+                        <div class="fetch" resource="{{{lodide:exercise}}}" context="http://ontology.lodide.io/index">More info about exercise will show up here</div>
                         <a href='./?exercise={{{lodide:exercise}}}'>go play</a>
                   """
                 ]
@@ -573,7 +574,7 @@ $(function () {
         });
     });
     
-    $("#exerciseIndex").click(function() {
+    $("#exerciseIndexLink").click(function() {
         var contentArea = $("#exercise");
         contentArea.addClass("fetch");
         contentArea.attr("resource", "index.ttl");
@@ -658,7 +659,7 @@ $(function () {
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">LodIDE</a></li>
-                        <li><a id="exerciseIndex">Exercises/Examples</a></li>
+                        <li><a id="exerciseIndexLink">Exercises/Examples</a></li>
                         <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li> -->
