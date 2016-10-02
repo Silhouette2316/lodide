@@ -572,16 +572,36 @@ $(function () {
                 return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#" + localName);
             }
         });
-    });
     
-    $(".exerciseIndexLink").click(function() {
-        var contentArea = $("#exercise");
-        contentArea.addClass("fetch");
-        contentArea.attr("resource", "index.ttl");
-        LD2h.expand();
-        window.history.pushState({},"", "exercise-index.html");
-        $("#lodIDEMenu").removeClass("active");
-        $("#exerciseIndexMenu").addClass("active");
+    
+        $(".exerciseIndexLink").click(function(e) {
+            var exerciseArea = $("#exercise");
+            exerciseArea.hide();
+            var exerciseIndexArea = $("#exerciseIndex");
+
+            if (exerciseIndexArea.is(":visible")) {
+                exerciseIndexArea.addClass("fetch");
+                exerciseIndexArea.attr("resource", "index.ttl");
+                LD2h.expand();
+            } else {
+                exerciseIndexArea.show();
+            }
+            window.history.pushState({},"", "exercise-index.html");
+            $("#lodIDEMenu").removeClass("active");
+            $("#exerciseIndexMenu").addClass("active");
+            e.preventDefault();
+        });
+
+        $(".lodIDELink").click(function() {
+            var exerciseArea = $("#exercise");
+            exerciseArea.show();
+            var exerciseIndexArea = $("#exerciseIndex");
+            exerciseIndexArea.hide();
+            window.history.pushState({},"", "./");
+            $("#lodIDEMenu").addClass("active");
+            $("#exerciseIndexMenu").removeClass("active");
+        });
+
     });
 
 });
@@ -660,7 +680,7 @@ $(function () {
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li id="lodIDEMenu" class="active"><a href="#">LodIDE</a></li>
+                        <li id="lodIDEMenu" class="active"><a class="lodIDELink">LodIDE</a></li>
                         <li id="exerciseIndexMenu"><a class="exerciseIndexLink">Exercises/Examples</a></li>
                         <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
@@ -678,6 +698,7 @@ $(function () {
 
 
             <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
+            <div id="exerciseIndex"> </div>
             <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
             <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
             <div id="result"></div>
