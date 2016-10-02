@@ -3,7 +3,7 @@
 
 <> a lodide:Exercise;
     lodide:intro """<h2>LodIDE</h2>
-            <p>If you don't know what to do here, check out one of the <a href="exercise-index.html">exercises</a>.</p>""";
+            <p>If you don't know what to do here, check out one of the <a class="exerciseIndexLink" href="exercise-index.html">exercises</a>.</p>""";
     lodide:finalWords """<ul>
                     <li>When you're finished press the "Run my code"-button.
                     The results will show up below the button.</li>

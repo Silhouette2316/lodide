@@ -54,6 +54,7 @@
                     r2h:predicate lodide:intro;
                 ];
                 r2h:template [ 
+                    r2h:context r2h:Default;
                     r2h:mustache '''<span id="intro">{{{lodide:intro}}}</span><br/>
                                     {{{:render lodide:dataSource}}}<br>
                                     {{{:render lodide:dataProcessing}}}<br>
@@ -180,6 +181,72 @@
             ].
                     
 
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:type;
+                  r2h:object lodide:Index;
+                ];
+                r2h:template [ 
+                  r2h:context r2h:Default;
+                  r2h:mustache """<h1>LodIde</h1>
+                    <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
+                        <ul>
+                            {{{:render lodide:elements lodide:index}}}
+                        </ul>"""
+                ]
+            ].
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:type;
+                  r2h:object lodide:Exercise;
+                ];
+                r2h:template [ 
+                  r2h:context lodide:index;
+                  r2h:mustache "{{{lodide:intro}}}"
+                ]
+            ].
+            [ a r2h:Matcher ;
+                r2h:triplePattern [
+                  r2h:subject r2h:this;
+                  r2h:predicate rdf:rest;
+                  r2h:object rdf:nil
+                ];
+                r2h:template [ 
+                  r2h:context lodide:index;
+                  r2h:mustache '''
+              <li class="exercise-index">{{{:render rdf:first}}}</li> 
+                  '''
+                ] 
+            ] r2h:before [ 
+                a r2h:Matcher ;
+                    r2h:triplePattern [
+                      r2h:subject r2h:this;
+                      r2h:predicate rdf:first
+                    ];
+                    r2h:template [ 
+                      r2h:context lodide:index;
+                      r2h:mustache '''
+                  <li class="exercise-index">{{{:render rdf:first}}}</li> 
+                  {{{:render rdf:rest}}}
+                      '''
+                    ]
+            ]. 
+            [ a r2h:Matcher ;
+                r2h:triplePattern [    
+                  r2h:subject r2h:this;
+                  r2h:predicate lodide:exercise;
+                ];
+                r2h:template [ 
+                  r2h:context lodide:index;
+                  r2h:mustache """
+                        {{{schema:description}}}:
+                        <div class="fetch" resource="{{{lodide:exercise}}}" context="http://ontology.lodide.io/index">More info about exercise will show up here</div>
+                        <a href='./?exercise={{{lodide:exercise}}}'>go play</a>
+                  """
+                ]
+            ].
         </script>
         <script>
 //From http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
@@ -505,6 +572,36 @@ $(function () {
                 return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#" + localName);
             }
         });
+    
+    
+        $(".exerciseIndexLink").click(function(e) {
+            var exerciseArea = $("#exercise");
+            exerciseArea.hide();
+            var exerciseIndexArea = $("#exerciseIndex");
+
+            if (exerciseIndexArea.is(":visible")) {
+                exerciseIndexArea.addClass("fetch");
+                exerciseIndexArea.attr("resource", "index.ttl");
+                LD2h.expand();
+            } else {
+                exerciseIndexArea.show();
+            }
+            window.history.pushState({},"", "exercise-index.html");
+            $("#lodIDEMenu").removeClass("active");
+            $("#exerciseIndexMenu").addClass("active");
+            e.preventDefault();
+        });
+
+        $(".lodIDELink").click(function() {
+            var exerciseArea = $("#exercise");
+            exerciseArea.show();
+            var exerciseIndexArea = $("#exerciseIndex");
+            exerciseIndexArea.hide();
+            window.history.pushState({},"", "./");
+            $("#lodIDEMenu").addClass("active");
+            $("#exerciseIndexMenu").removeClass("active");
+        });
+
     });
 
 });
@@ -583,8 +680,8 @@ $(function () {
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">LodIDE</a></li>
-                        <li><a href="exercise-index.html">Exercises/Examples</a></li>
+                        <li id="lodIDEMenu" class="active"><a class="lodIDELink">LodIDE</a></li>
+                        <li id="exerciseIndexMenu"><a class="exerciseIndexLink">Exercises/Examples</a></li>
                         <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li> -->
@@ -601,6 +698,7 @@ $(function () {
 
 
             <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
+            <div id="exerciseIndex"> </div>
             <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
             <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
             <div id="result"></div>
