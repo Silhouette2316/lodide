@@ -1,0 +1,205 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+@prefix lodide: <http://ontology.lodide.io/> .
+@prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
+
+[ a r2h:Matcher ;
+        r2h:triplePattern [    
+        r2h:subject r2h:this;
+        r2h:predicate lodide:intro;
+    ];
+    r2h:template [ 
+        r2h:context r2h:Default;
+        r2h:mustache '''<span id="intro">{{{lodide:intro}}}</span><br/>
+                        {{{:render lodide:dataSource}}}<br>
+                        {{{:render lodide:dataProcessing}}}<br>
+                        {{{:render lodide:dataRendering}}}<br>
+                        <div class="exercise" id="finalWords">{{{lodide:finalWords}}}</div>
+                     '''
+    ]
+].
+[ a r2h:Matcher ;
+        r2h:triplePattern [    
+        r2h:predicate lodide:dataSource;
+        r2h:object r2h:this;
+    ];
+    r2h:template [ 
+        r2h:mustache '''<h2>Data source</h2>
+
+            {{#+lodide:taskDescription}}
+            <div class="exercise">
+                <span id="dataSource-taskDescription">{{{lodide:taskDescription}}}</span>
+                {{#lodide:taskSolutionResource}}
+                <button class="source-solution-button btn btn-info">Show solution</button>
+                {{/lodide:taskSolutionResource}}
+                {{#lodide:taskSolutionCode}}
+                <button class="source-solution-button btn btn-info">Show solution</button>
+                {{/lodide:taskSolutionCode}}
+            </div>
+            {{/+lodide:taskDescription}}
+            <div id="addRdfSource">
+                <label for="selRdfSource">RDF Source:</label>
+                <select class="form-control" id="selRdfSource">
+                    <option value="uri">URI pointing to RDF</option>
+                    <option value="directInput">Direct RDF Input</option>
+                </select>
+                <button type="button" id="setRdfSource" class="btn btn-success">Set</button>
+            </div>
+            <div style="display: none" id="rdfSource-uri" class="dataSource">
+                Specify the URL from which to retrieve the RDF data:
+                <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />
+            </div>
+
+            <div style="display: none" id="rdfSource-directInput" class="dataSource">
+                Enter the RDF data:
+                <div id="rdfDataEditor" class="editor"></div>
+                <div id="sourceEditor-solution" style="display: none">{{lodide:taskSolutionCode}}</div>
+            </div>
+            <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>
+            <script>
+            function setRdfSourceType(type) {
+                $('.dataSource').hide();
+                $('#rdfSource-'+type).show();
+                $("#selRdfSource").val(type);
+                $('#setRdfSource').html('change');
+            }
+            {{#lodide:taskSolutionResourceCurrent}}
+                setRdfSourceType("uri");
+            {{/lodide:taskSolutionResourceCurrent}}
+            $('#setRdfSource').on('click', function(e) {
+                setRdfSourceType($("#selRdfSource").val())
+
+            });
+            \u003C/script>
+
+            <script>
+                var rdfDataEditorValue = `{{{lodide:taskSolutionCodeCurrent}}}`;
+                if (rdfDataEditorValue && (rdfDataEditorValue.trim().length > 0)) {
+                    setRdfSourceType("directInput");
+                }
+                $("#rdfDataEditor").html("")
+                var rdfDataEditorCM = CodeMirror($("#rdfDataEditor")[0], {
+                    mode: "turtle"
+                });
+                if (rdfDataEditorValue) {
+                    rdfDataEditorCM.setValue(rdfDataEditorValue);
+                }
+            \u003C/script>
+             '''
+    ]
+].
+[ a r2h:Matcher ;
+        r2h:triplePattern [    
+        r2h:predicate lodide:dataProcessing;
+        r2h:object r2h:this;
+    ];
+    r2h:template [ 
+        r2h:mustache '''<h2>Data Processing</h2>
+            {{#+lodide:taskDescription}}
+            <div class="exercise">
+                <span id="dataProcessing-taskDescription">{{{lodide:taskDescription}}}</span>
+                {{#lodide:taskSolutionCode}}
+                <button id="codeEditor-solution-button">Show solution</button>
+                {{/lodide:taskSolutionCode}}
+            </div>
+            {{/+lodide:taskDescription}}
+            <div>
+                Act on the data available as graph object <code>g</code>;
+            </div>
+            <div id="codeEditor" class="editor">{{lodide:taskSolutionCodeCurrent}}</div>
+            <div style="display: none" id="codeEditor-solution">{{lodide:taskSolutionCode}}</div>'''
+    ]
+].
+
+[ a r2h:Matcher ;
+        r2h:triplePattern [    
+        r2h:predicate lodide:dataRendering;
+        r2h:object r2h:this;
+    ];
+    r2h:template [ 
+        r2h:mustache '''<h2 id="dataRenderingTitle">Data Rendering</h2>
+            {{#+lodide:taskDescription}}
+            <div class="exercise">
+                <span id="dataRendering-taskDescription">{{{lodide:taskDescription}}}</span>
+                {{#lodide:taskSolutionResource}}
+                <button id="rendering-solution-button">Show solution</button>
+                {{/lodide:taskSolutionResource}}
+            </div>
+            {{/+lodide:taskDescription}}
+            <div>Render a resource using RDF2h matchers.</div>
+            <div>Resource: <input id="rendering-resource" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" /></div>
+            <div>RDF2h matchers:</div>
+            <div id="matchersEditor" class="editor">{{lodide:taskSolutionCodeCurrent}}</div>
+            <div style="display: none" id="rendering-resource-solution">{{lodide:taskSolutionResource}}</div>
+            <div style="display: none" id="matchersEditor-solution">{{lodide:taskSolutionCode}}</div>'''
+    ]
+].
+
+
+[ a r2h:Matcher ;
+    r2h:triplePattern [    
+      r2h:subject r2h:this;
+      r2h:predicate rdf:type;
+      r2h:object lodide:Index;
+    ];
+    r2h:template [ 
+      r2h:context r2h:Default;
+      r2h:mustache """<h1>LodIde</h1>
+        <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
+            <ul>
+                {{{:render lodide:elements lodide:index}}}
+            </ul>"""
+    ]
+].
+[ a r2h:Matcher ;
+    r2h:triplePattern [    
+      r2h:subject r2h:this;
+      r2h:predicate rdf:type;
+      r2h:object lodide:Exercise;
+    ];
+    r2h:template [ 
+      r2h:context lodide:index;
+      r2h:mustache "{{{lodide:intro}}}"
+    ]
+].
+[ a r2h:Matcher ;
+    r2h:triplePattern [
+      r2h:subject r2h:this;
+      r2h:predicate rdf:rest;
+      r2h:object rdf:nil
+    ];
+    r2h:template [ 
+      r2h:context lodide:index;
+      r2h:mustache '''
+  <li class="exercise-index">{{{:render rdf:first}}}</li> 
+      '''
+    ] 
+] r2h:before [ 
+    a r2h:Matcher ;
+        r2h:triplePattern [
+          r2h:subject r2h:this;
+          r2h:predicate rdf:first
+        ];
+        r2h:template [ 
+          r2h:context lodide:index;
+          r2h:mustache '''
+      <li class="exercise-index">{{{:render rdf:first}}}</li> 
+      {{{:render rdf:rest}}}
+          '''
+        ]
+]. 
+[ a r2h:Matcher ;
+    r2h:triplePattern [    
+      r2h:subject r2h:this;
+      r2h:predicate lodide:exercise;
+    ];
+    r2h:template [ 
+      r2h:context lodide:index;
+      r2h:mustache """
+            {{{schema:description}}}:
+            <div class="fetch" resource="{{{lodide:exercise}}}" context="http://ontology.lodide.io/index">More info about exercise will show up here</div>
+            <a href='./?exercise={{{lodide:exercise}}}'>go play</a>
+      """
+    ]
+].
