@@ -1,5 +1,6 @@
+//Utility functions
 //From http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
-var getURLParameter = function (sParam) {
+function getURLParameter(sParam) {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
     for (var i = 0; i < sURLVariables.length; i++) {
@@ -9,6 +10,13 @@ var getURLParameter = function (sParam) {
         }
     }
 };
+
+function ampDecode(encoded) {
+    var elem = document.createElement('textarea');
+    elem.innerHTML = encoded;
+    return elem.value;
+}
+
 $(function () {
     var gh = null;
     var profile;
@@ -17,13 +25,9 @@ $(function () {
     if (exerciseParam) {
         $("#exercise").attr("resource", exerciseParam);
     }
+    
     LD2h.expand().then(function () {
         
-        function ampDecode(encoded) {
-            var elem = document.createElement('textarea');
-            elem.innerHTML = encoded;
-            return elem.value;
-        }
         
         var sourceUriValue = $("#sourceURI").val();
         if (sourceUriValue && (sourceUriValue.trim().length > 0)) {

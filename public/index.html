@@ -87,7 +87,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Modal Header</h4>
+                        <h4 class="modal-title">Save current content</h4>
                     </div>
                     <div class="modal-body">
                         <p><label for="fileName">Filename</label>:<input type="text" id="fileName" /></p>
@@ -103,7 +103,8 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <button type="button" class="navbar-toggle collapsed" 
+                            data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -121,83 +122,27 @@
                         <li class="authenticatedOnly"><a href="#saved">Saved</a></li>
                         <!-- <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li> -->
-
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#about"><span id="login-div"></span></a></li>
                     </ul>
-                </div><!--/.nav-collapse -->
+                </div>
             </div>
         </nav>
 
-        <div class="container" id="content">  
-
-
-            <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
+        <div class="container" id="content">
+            <div class="exercise">
+                <div class="intro, fetch" id="exercise" resource="empty.ttl"> </div>
+                <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
+                <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
+                <div id="result"></div>
+            </div>
             <div id="exerciseIndex"> </div>
-            <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
-            <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
-            <div id="result"></div>
         </div>
 
         <div class="authenticatedOnly container" id="saved">
             Saved contents will appear here.
-
-
         </div>
-        <script>
-            $(function () {
-                var navListItems = $('ul.setup-panel li a');/*,
-                 allWells = $('.setup-content');
-                 
-                 allWells.hide();
-                 */
-                navListItems.click(function (e)
-                {
-                    e.preventDefault();
-                    var $target = $($(this).attr('href')),
-                            $item = $(this).closest('li');
-
-                    if (!$item.hasClass('disabled')) {
-                        navListItems.closest('li').removeClass('active');
-                        $item.addClass('active');
-                        $target.show();
-                    }
-                });
-
-//$('ul.setup-panel li.active a').trigger('click');
-
-// DEMO ONLY //
-                $('#activate-step-2').on('click', function (e) {
-                    $('ul.setup-panel li:eq(1)').removeClass('disabled');
-//$('ul.setup-panel li a[href="#step-2"]').trigger('click');
-                    $(this).remove();
-                });
-            });
-        </script>
-        <!-- <footer class="footer">
-            <div class="container">
-
-                <div class="row form-group">
-                    <div class="col-xs-12">
-                        <ul class="nav nav-pills nav-justified thumbnail setup-panel">
-                            <li class="active"><a href="#step-1">
-                                    <h4 class="list-group-item-heading">Step 1</h4>
-                                    <p class="list-group-item-text">First step description</p>
-                                </a></li>
-                            <li class="disabled"><a href="#step-2">
-                                    <h4 class="list-group-item-heading">Step 2</h4>
-                                    <p class="list-group-item-text">Second step description</p>
-                                </a></li>
-                            <li class="disabled"><a href="#step-3">
-                                    <h4 class="list-group-item-heading">Step 3</h4>
-                                    <p class="list-group-item-text">Third step description</p>
-                                </a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </footer> -->
         <footer class="footer">
             <div class="container">
                 <p class="text-muted"><a href="https://github.com/edulod/lodide">LodIDE on GitHub</a></p>
