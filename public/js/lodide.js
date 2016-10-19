@@ -339,6 +339,7 @@ $(function () {
             } else {
                 exerciseIndexArea.show();
             }
+            window.previousLocation = window.location.toString();
             window.history.pushState({},"", "exercise-index.html");
             $("#lodIDEMenu").removeClass("active");
             $("#exerciseIndexMenu").addClass("active");
@@ -350,7 +351,7 @@ $(function () {
             exerciseArea.show();
             var exerciseIndexArea = $("#exerciseIndex");
             exerciseIndexArea.hide();
-            window.history.pushState({},"", "./");
+            window.history.pushState({},"", window.previousLocation);
             $("#lodIDEMenu").addClass("active");
             $("#exerciseIndexMenu").removeClass("active");
         });
