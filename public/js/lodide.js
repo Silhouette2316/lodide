@@ -9,7 +9,8 @@ function getURLParameter(sParam) {
             return sParameterName[1];
         }
     }
-};
+}
+;
 
 function ampDecode(encoded) {
     var elem = document.createElement('textarea');
@@ -20,20 +21,20 @@ function ampDecode(encoded) {
 $(function () {
     var gh = null;
     var profile;
-    
+
     var exerciseParam = getURLParameter("exercise");
     if (exerciseParam) {
         $("#exercise").attr("resource", exerciseParam);
     }
-    
+
     LD2h.expand().then(function () {
-        
-        
+
+
         var sourceUriValue = $("#sourceURI").val();
         if (sourceUriValue && (sourceUriValue.trim().length > 0)) {
             setRdfSourceType("uri");
         }
-        
+
         var codeEditorValue = ampDecode($("#codeEditor").html());
         $("#codeEditor").html("");
         var codeEditorCM = CodeMirror($("#codeEditor")[0], {
@@ -60,47 +61,47 @@ $(function () {
                     'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
                 })
             });
-            var getData = function() {
+            var getData = function () {
                 if ($('#rdfSource-uri').is(":visible")) {
                     return store.match(
-                        null,
-                        null,
-                        null,
-                        sourceURI).catch(
-                        function (error) {
-                            console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
-                        });   
-                    
+                            null,
+                            null,
+                            null,
+                            sourceURI).catch(
+                            function (error) {
+                                console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
+                            });
+
                 } else {
                     var turtle = rdfDataEditorCM.getValue();
-                    return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function(e) {
+                    return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
                         console.log(e);
-                        alert("Could not parse Turtle: "+e.constructor.name);
+                        alert("Could not parse Turtle: " + e.constructor.name);
                         throw "Parsing failed";
                     });
                 }
             };
-            getData().then(function(g) {  
+            getData().then(function (g) {
                 var code = codeEditorCM.getValue();
-                var runCode = new Promise(function(resolve, reject) {
+                var runCode = new Promise(function (resolve, reject) {
                     try {
-                        var result = eval(code); 
+                        var result = eval(code);
                     } catch (e) {
-                        if ((e instanceof ReferenceError) || 
-                                (e instanceof SyntaxError) || 
+                        if ((e instanceof ReferenceError) ||
+                                (e instanceof SyntaxError) ||
                                 (e instanceof TypeError)) {
-                            alert(e.constructor.name+
-                                   (e.lineNumber? " on line "+e.lineNumber: "")+
-                                   ": "+e.message);
+                            alert(e.constructor.name +
+                                    (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                    ": " + e.message);
                         } else {
-                            throw( e );
+                            throw(e);
                         }
                     }
                     //if code result in undefined it will immediately be resolves 
                     //if it returns a promise it will follow that promise
                     resolve(result);
                 });
-                runCode.then(function() {
+                runCode.then(function () {
                     var resource = rdf.createNamedNode($("#rendering-resource").val());
                     var matchersTurtle = matchersEditorCM.getValue();
                     if (matchersTurtle.length > 0) {
@@ -109,7 +110,7 @@ $(function () {
                                     g, resource);
                             $("#result").html(renderingResult);
                         });
-                    }    
+                    }
                 });
             });
         };
@@ -270,9 +271,9 @@ $(function () {
                 g.add(rdf.createTriple(exercise, lodIdeNs("dataSource"), dataSource));
                 if ($("#dataSource-taskDescription").length > 0) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"),
-                        rdf.createLiteral($("#dataSource-taskDescription").html())));
+                            rdf.createLiteral($("#dataSource-taskDescription").html())));
                 }
-                        
+
                 g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"),
                         rdf.createNamedNode($("#sourceURI-solution").html())));
                 if ($('#rdfSource-uri').is(":visible")) {
@@ -290,7 +291,7 @@ $(function () {
                             rdf.createLiteral($("#dataProcessing-taskDescription").html())));
                 }
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCode"),
-                        rdf.createLiteral($("#codeEditor-solution").html())));               
+                        rdf.createLiteral($("#codeEditor-solution").html())));
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCodeCurrent"),
                         rdf.createLiteral(codeEditorCM.getValue())));
                 if ($("#dataRenderingTitle").length > 0) {
@@ -320,9 +321,9 @@ $(function () {
                 return rdf.createNamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#" + localName);
             }
         });
-    
-    
-        $(".exerciseIndexLink").click(function(e) {
+
+
+        $(".exerciseIndexLink").click(function (e) {
             var exerciseArea = $("#exercise");
             exerciseArea.hide();
             var exerciseIndexArea = $("#exerciseIndex");
@@ -335,18 +336,18 @@ $(function () {
                 exerciseIndexArea.show();
             }
             window.previousLocation = window.location.toString();
-            window.history.pushState({},"", "exercise-index.html");
+            window.history.pushState({}, "", "exercise-index.html");
             $("#lodIDEMenu").removeClass("active");
             $("#exerciseIndexMenu").addClass("active");
             e.preventDefault();
         });
 
-        $(".lodIDELink").click(function() {
+        $(".lodIDELink").click(function () {
             var exerciseArea = $("#exercise");
             exerciseArea.show();
             var exerciseIndexArea = $("#exerciseIndex");
             exerciseIndexArea.hide();
-            window.history.pushState({},"", window.previousLocation);
+            window.history.pushState({}, "", window.previousLocation);
             $("#lodIDEMenu").addClass("active");
             $("#exerciseIndexMenu").removeClass("active");
         });
