@@ -20,8 +20,6 @@
         <link rel="stylesheet" href="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/lib/codemirror.css">
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/javascript/javascript.js"></script>
         <script src="//cdn.rawgit.com/codemirror/CodeMirror/5.13.2/mode/turtle/turtle.js"></script>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
         <script src="//unpkg.com/github-api@v2.2.0/dist/GitHub.bundle.min.js"></script>
 
         <!-- Latest compiled and minified CSS -->
@@ -47,26 +45,36 @@
         <script src="js/lodide.js"></script>
     </head>
     <body>
-        <div id="login-dialog" title="Login with GitHub">
-            <ul>
-                <li><a href="#password-login">Password Login</a></li>
-                <li><a href="#personalAccessTokenLogin">Personal Access Token</a></li>
+        <div id="login-dialog" class="modal fade" role="dialog">
+  
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Login with GitHub</h4>
+                    </div>
+<div class="modal-body">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#password-login">Password Login</a></li>
+                <li><a data-toggle="tab" href="#personalAccessTokenLogin">Personal Access Token</a></li>
             </ul>
-            <div>
-                <div id="password-login">
+            <div class="tab-content">
+                <div id="password-login" class="tab-pane fade in active">
                     <label for="userName">Username:</label><input type="text" id="userName" /><br />
                     <label for="password">Password:</label><input type="password" id="password" /><br />
                     <button id="passwordLoginButton" type="button" class="btn btn-default">Login</button><br />
                     Assuming nobody tampered with the scripts of this page, your 
                     browser will send these credentials exclusively to GitHub 
-                    servers, if you feel uncorfortable you can login with a <i>personal
-                        access token</i> instead.
+                    servers, if you feel uncorfortable you can login with a 
+                    <i>Personal Access Token</i> instead.
                 </div>
-                <div id="personalAccessTokenLogin">
+                <div id="personalAccessTokenLogin" class="tab-pane fade">
                     You can generate a new personal access token on 
                     <a href="https://github.com/settings/tokens">
                         https://github.com/settings/tokens
-                    </a>.
+                    </a>.<br />
                     <label for="personalAccessToken">Personal Access Token:</label><input type="text" id="personalAccessToken" /><br />
                     <label for="saveCredentialForLater">Save for later:</label><input type=checkbox id="saveCredentialForLater" /><br />
                     <button id="personalAccessTokenLoginButton" type="button" class="btn btn-default">Login</button><br />
@@ -76,6 +84,9 @@
                             $("#saveCredentialForLater").prop('checked', true);
                         }
                     </script>
+                </div>
+            </div>
+        </div>
                 </div>
             </div>
         </div>

@@ -147,11 +147,6 @@ $(function () {
         });
 
 
-        $.fn.tabbedDialog = function () {
-            this.tabs();
-            this.dialog({'modal': true, 'minWidth': 800, 'minHeight': 300, 'draggable': true});
-        };
-
 
         updateLogginStatus();
 
@@ -186,7 +181,7 @@ $(function () {
                 $('.authenticatedOnly').hide();
                 $('#login-div').html('<a id="login-link" href="#login">Login with GitHub</a>');
                 $('#login-link').click(function () {
-                    $('#login-dialog').tabbedDialog();
+                    $('#login-dialog').modal("show");
                     return false;
                 });
             }
@@ -200,7 +195,7 @@ $(function () {
                 profile = response.data;
                 console.log(profile);
                 updateLogginStatus();
-                $('#login-dialog').dialog("close");
+                $('#login-dialog').modal('hide');
             });
 
 
