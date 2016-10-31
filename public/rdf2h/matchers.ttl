@@ -16,6 +16,9 @@
                         {{{:render lodide:dataProcessing}}}<br>
                         {{{:render lodide:dataRendering}}}<br>
                         <div class="exercise" id="finalWords">{{{lodide:finalWords}}}</div>
+                        <button id="run" type="button" class="btn btn-primary pull-right">Run my code</button>
+                        <button id="saveButton" type="button" class="btn btn-default pull-right authenticatedOnly">Save my code</button>
+                        <div id="result"></div>
                      '''
     ]
 ].
