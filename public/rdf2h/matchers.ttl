@@ -35,9 +35,11 @@
                 <span id="dataSource-taskDescription">{{{lodide:taskDescription}}}</span>
                 {{#lodide:taskSolutionResource}}
                 <button class="source-solution-button btn btn-info">Show solution</button>
+                <div style="display: none" id="sourceURI-solution">{{.}}</div>
                 {{/lodide:taskSolutionResource}}
                 {{#lodide:taskSolutionCode}}
                 <button class="source-solution-button btn btn-info">Show solution</button>
+                <div id="sourceEditor-solution" style="display: none">{{.}}</div>
                 {{/lodide:taskSolutionCode}}
             </div>
             {{/+lodide:taskDescription}}
@@ -51,15 +53,13 @@
             </div>
             <div style="display: none" id="rdfSource-uri" class="dataSource">
                 Specify the URL from which to retrieve the RDF data:
-                <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />
+                <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />             
             </div>
 
             <div style="display: none" id="rdfSource-directInput" class="dataSource">
                 Enter the RDF data:
                 <div id="rdfDataEditor" class="editor"></div>
-                <div id="sourceEditor-solution" style="display: none">{{lodide:taskSolutionCode}}</div>
-            </div>
-            <div style="display: none" id="sourceURI-solution">{{lodide:taskSolutionResource}}</div>
+            </div>           
             <script>
             function setRdfSourceType(type) {
                 $('.dataSource').hide();

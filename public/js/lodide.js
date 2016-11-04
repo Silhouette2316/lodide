@@ -117,7 +117,7 @@ $(function () {
         $("#run").on("click", run);
 
         $(".source-solution-button").on("click", function () {
-            if ($("#sourceURI-solution").text().trim().length > 0) {
+            if ($("#sourceURI-solution").length > 0) {
                 if (confirm("Confirm that you are you too lazy to copy and paste that URI.")) {
                     $("#sourceURI").val($("#sourceURI-solution").text().trim());
                     setRdfSourceType("uri")
