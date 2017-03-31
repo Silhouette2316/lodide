@@ -16,6 +16,10 @@
         schema:description "A simple exercise"
     ]
     [
+        lodide:exercise <exercises/film.ttl>;
+        schema:description "An overview to interact with a SPARQL endpoint"
+    ]
+    [
         lodide:exercise <exercises/render-timbl.ttl>;
         schema:description "A more complete exercise"
     ]
