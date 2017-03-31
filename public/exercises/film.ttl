@@ -11,19 +11,20 @@
 @prefix schema: <http://schema.org/>.
 
 <> a lodide:Exercise;
-    lodide:intro "<h2>Italian film in DBpedia</h2>\n            <p>In this exercise you write a SPARQL query to get film titles from DBpedia.</p>";
+    lodide:intro "<h2>Italian films in DBpedia</h2>\n            <p>In this example you see how to write a SPARQL query to get film titles from DBpedia.</p>";
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
     lodide:dataSource [
-        lodide:taskDescription """Write a SPARQL query CONSTRUCT for display ten film titles produced in Italy, using DBpedia SPARQL endpoint.""";
+        lodide:taskDescription """Write a SPARQL query CONSTRUCT to display ten film titles produced in Italy, using DBpedia SPARQL endpoint.""";
         lodide:endpointURLSolution "http://dbpedia.org/sparql";
-        lodide:sparqlForEndpointSolution """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                                            CONSTRUCT { ?movie rdfs:label ?label }
-                                            WHERE {
-                                              ?movie a <http://dbpedia.org/ontology/Film> .
-                                              ?movie <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Italy> .
-                                              ?movie rdfs:label ?label .
-                                              FILTER (lang(?label) = 'en')
-                                            } LIMIT 10""";
+        lodide:sparqlForEndpointSolution """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+CONSTRUCT { ?movie rdfs:label ?label }
+WHERE {
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Italy> .
+  ?movie rdfs:label ?label .
+  FILTER (lang(?label) = 'en')
+} LIMIT 10""";
     ].
 <> lodide:dataProcessing [
     lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea.
