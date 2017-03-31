@@ -5,11 +5,11 @@
 @prefix dc: <http://dublincore.org/2012/06/14/dcelements#>.
 
 [ a r2h:Matcher ;
-        r2h:triplePattern [    
+        r2h:triplePattern [
         r2h:subject r2h:this;
         r2h:predicate lodide:intro;
     ];
-    r2h:template [ 
+    r2h:template [
         r2h:context r2h:Default;
         r2h:mustache '''<span id="intro">{{{lodide:intro}}}</span><br/>
                         {{{:render lodide:dataSource}}}<br>
@@ -23,11 +23,11 @@
     ]
 ].
 [ a r2h:Matcher ;
-        r2h:triplePattern [    
+        r2h:triplePattern [
         r2h:predicate lodide:dataSource;
         r2h:object r2h:this;
     ];
-    r2h:template [ 
+    r2h:template [
         r2h:mustache '''<h2>Data source</h2>
 
             {{#+lodide:taskDescription}}
@@ -48,18 +48,30 @@
                 <select class="form-control" id="selRdfSource">
                     <option value="uri">URI pointing to RDF</option>
                     <option value="directInput">Direct RDF Input</option>
+                    <option value="endpoint">SPARQL endpoint</option>
                 </select>
                 <button type="button" id="setRdfSource" class="btn btn-success">Set</button>
             </div>
             <div style="display: none" id="rdfSource-uri" class="dataSource">
                 Specify the URL from which to retrieve the RDF data:
-                <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />             
+                <input id="sourceURI" type="text" size="80" value="{{{lodide:taskSolutionResourceCurrent}}}" />
             </div>
 
             <div style="display: none" id="rdfSource-directInput" class="dataSource">
                 Enter the RDF data:
                 <div id="rdfDataEditor" class="editor"></div>
-            </div>           
+            </div>
+
+            <div style="display: none" id="rdfSource-endpoint" class="dataSource">
+                Specify the SPARQL endpoint URL:
+                <input id="endpointURL" type="text" size="80" value="{{{lodide:endpointURL}}}" />
+                <br/>
+                Write your SPARQL query:<br/>
+                <div id="sparqlEditor" class="editor">
+                <div class="CodeMirror cm-s-default">
+                <textarea id="queryForEndpoint" style="position: absolute; padding: 0px; width: 100%; height: 100%; outline: medium none;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea>
+                </div></div>
+            </div>
             <script>
             function setRdfSourceType(type) {
                 $('.dataSource').hide();
@@ -93,11 +105,11 @@
     ]
 ].
 [ a r2h:Matcher ;
-        r2h:triplePattern [    
+        r2h:triplePattern [
         r2h:predicate lodide:dataProcessing;
         r2h:object r2h:this;
     ];
-    r2h:template [ 
+    r2h:template [
         r2h:mustache '''<h2>Data Processing</h2>
             {{#+lodide:taskDescription}}
             <div class="exercise">
@@ -116,11 +128,11 @@
 ].
 
 [ a r2h:Matcher ;
-        r2h:triplePattern [    
+        r2h:triplePattern [
         r2h:predicate lodide:dataRendering;
         r2h:object r2h:this;
     ];
-    r2h:template [ 
+    r2h:template [
         r2h:mustache '''<h2 id="dataRenderingTitle">Data Rendering</h2>
             {{#+lodide:taskDescription}}
             <div class="exercise">
@@ -141,12 +153,12 @@
 
 
 [ a r2h:Matcher ;
-    r2h:triplePattern [    
+    r2h:triplePattern [
       r2h:subject r2h:this;
       r2h:predicate rdf:type;
       r2h:object lodide:Index;
     ];
-    r2h:template [ 
+    r2h:template [
       r2h:context r2h:Default;
       r2h:mustache """<h1>LodIde</h1>
         <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
@@ -156,12 +168,12 @@
     ]
 ].
 [ a r2h:Matcher ;
-    r2h:triplePattern [    
+    r2h:triplePattern [
       r2h:subject r2h:this;
       r2h:predicate rdf:type;
       r2h:object lodide:Exercise;
     ];
-    r2h:template [ 
+    r2h:template [
       r2h:context lodide:index;
       r2h:mustache "{{{lodide:intro}}}"
     ]
@@ -172,32 +184,32 @@
       r2h:predicate rdf:rest;
       r2h:object rdf:nil
     ];
-    r2h:template [ 
+    r2h:template [
       r2h:context lodide:index;
       r2h:mustache '''
-  <li class="exercise-index">{{{:render rdf:first}}}</li> 
+  <li class="exercise-index">{{{:render rdf:first}}}</li>
       '''
-    ] 
-] r2h:before [ 
+    ]
+] r2h:before [
     a r2h:Matcher ;
         r2h:triplePattern [
           r2h:subject r2h:this;
           r2h:predicate rdf:first
         ];
-        r2h:template [ 
+        r2h:template [
           r2h:context lodide:index;
           r2h:mustache '''
-      <li class="exercise-index">{{{:render rdf:first}}}</li> 
+      <li class="exercise-index">{{{:render rdf:first}}}</li>
       {{{:render rdf:rest}}}
           '''
         ]
-]. 
+].
 [ a r2h:Matcher ;
-    r2h:triplePattern [    
+    r2h:triplePattern [
       r2h:subject r2h:this;
       r2h:predicate lodide:exercise;
     ];
-    r2h:template [ 
+    r2h:template [
       r2h:context lodide:index;
       r2h:mustache """
             {{{schema:description}}}:

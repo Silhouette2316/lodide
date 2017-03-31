@@ -52,7 +52,11 @@ $(function () {
             matchersEditorCM.setValue(matchersEditorValue);
         }
         var run = function () {
-            var sourceURI = $("#sourceURI").val();
+            if ($("#sourceURI").val() !== "") {
+                var sourceURI = $("#sourceURI").val();
+            } else {
+                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent($("#queryForEndpoint").val()) + "&format=auto";
+            }
             var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
             var store = new LdpStore({
                 parsers: new LdpStore.ParserUtil({
@@ -62,7 +66,7 @@ $(function () {
                 })
             });
             var getData = function () {
-                if ($('#rdfSource-uri').is(":visible")) {
+                if ($('#rdfSource-uri').is(":visible") || $('#rdfSource-endpoint').is(":visible")) {
                     return store.match(
                             null,
                             null,
@@ -97,7 +101,7 @@ $(function () {
                             throw(e);
                         }
                     }
-                    //if code result in undefined it will immediately be resolves 
+                    //if code result in undefined it will immediately be resolves
                     //if it returns a promise it will follow that promise
                     resolve(result);
                 });
@@ -355,5 +359,3 @@ $(function () {
     });
 
 });
-
-
