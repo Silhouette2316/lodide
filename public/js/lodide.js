@@ -277,9 +277,10 @@ $(function () {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"),
                             rdf.createLiteral($("#dataSource-taskDescription").html())));
                 }
-
-                g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"),
-                        rdf.createNamedNode($("#sourceURI-solution").html())));
+                if ($("#sourceURI-solution").html()) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"),
+                            rdf.createNamedNode($("#sourceURI-solution").html())));
+                }
                 if ($('#rdfSource-uri').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#sourceURI").val())));
