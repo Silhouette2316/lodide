@@ -14,9 +14,10 @@
     lodide:intro "<h2>Italian films in DBpedia</h2>\n            <p>In this example you see how to write a SPARQL query to get film titles from DBpedia.</p>";
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
     lodide:dataSource [
+        lodide:taskSolutionType lodide:sparqlSource;
         lodide:taskDescription """Write a SPARQL query CONSTRUCT to display ten film titles produced in Italy, using DBpedia SPARQL endpoint.""";
-        lodide:endpointURLSolution "http://dbpedia.org/sparql";
-        lodide:sparqlForEndpointSolution """
+        lodide:taskSolutionResource "http://dbpedia.org/sparql";
+        lodide:taskSolutionCode """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 CONSTRUCT { ?movie rdfs:label ?label }
 WHERE {
