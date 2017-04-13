@@ -92,8 +92,7 @@
 
             <script>
                 var rdfDataEditorValue = `{{{lodide:taskSolutionCodeCurrent}}}`;
-                //setRdfSourceType("directInput");
-                $("#rdfDataEditor").html("")
+                $("#rdfDataEditor").html("");
                 var rdfDataEditorCM = CodeMirror($("#rdfDataEditor")[0], {
                     mode: "turtle"
                 });
@@ -101,14 +100,10 @@
                     rdfDataEditorCM.setValue(rdfDataEditorValue);
                 }
 
-
                 var sparqlEditorValue = `{{{lodide:taskSolutionCodeCurrent}}}`;
-                /*if (sparqlEditorValue && (sparqlEditorValue.trim().length > 0)) {
-                    setRdfSourceType("sparql");
-                }*/
-                $("#sparqlEditor").html("")
+                $("#sparqlEditor").html("");
                 var sparqlEditorCM = CodeMirror($("#sparqlEditor")[0], {
-                    mode: "sparql"
+                    mode: "turtle" //it works also for SPARQL
                 });
                 if (sparqlEditorValue) {
                     sparqlEditorCM.setValue(sparqlEditorValue);

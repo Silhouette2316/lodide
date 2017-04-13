@@ -55,7 +55,8 @@ $(function () {
             if ($("#sourceURI").val() !== "") {
                 var sourceURI = $("#sourceURI").val();
             } else {
-                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent($("#queryForEndpoint").val()) + "&format=auto";
+                var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
+                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent(query) + "&format=auto";
             }
             var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
             var store = new LdpStore({
@@ -133,9 +134,9 @@ $(function () {
                 setRdfSourceType("directInput");
             }
             if (type === "http://ontology.lodide.io/sparqlSource") {
+                setRdfSourceType("sparql"); //MUST BE FIRST SO NOT TO OVERRIDE SOLUTION BOX
                 $("#endpointURL").val($("#sourceURI-solution").text().trim());
                 sparqlEditorCM.setValue($("#sourceEditor-solution").val().trim());
-                setRdfSourceType("sparql");
             }
         });
         $("#codeEditor-solution-button").on("click", function () {
