@@ -17,7 +17,11 @@
     ]
     [
         lodide:exercise <exercises/film.ttl>;
-        schema:description "An overview to interact with a SPARQL endpoint"
+        schema:description "Your first SPARQL query"
+    ]
+    [
+        lodide:exercise <exercises/film.ttl>;
+        schema:description "Your first SPARQL CONSTRUCT query"
     ]
     [
         lodide:exercise <exercises/render-timbl.ttl>;

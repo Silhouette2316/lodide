@@ -52,72 +52,105 @@ $(function () {
             matchersEditorCM.setValue(matchersEditorValue);
         }
         var run = function () {
+            var sparqlSelect = false;
             if ($("#sourceURI").val() !== "") {
                 var sourceURI = $("#sourceURI").val();
             } else {
                 var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
+                if (query.toUpperCase().includes("SELECT")) { //XXX not very strong!
+                    sparqlSelect = true;
+                }
                 var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent(query) + "&format=auto";
             }
-            var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
-            var store = new LdpStore({
-                parsers: new LdpStore.ParserUtil({
-                    'text/turtle': turtleParser,
-                    //'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
-                    'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
-                })
-            });
-            var getData = function () {
-                if ($('#rdfSource-uri').is(":visible") || $('#rdfSource-sparql').is(":visible")) {
-                    return store.match(
-                            null,
-                            null,
-                            null,
-                            sourceURI).catch(
-                            function (error) {
-                                console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
-                            });
 
-                } else {
-                    var turtle = rdfDataEditorCM.getValue();
-                    return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
-                        console.log(e);
-                        alert("Could not parse Turtle: " + e.constructor.name);
-                        throw "Parsing failed";
-                    });
-                }
-            };
-            getData().then(function (g) {
-                var code = codeEditorCM.getValue();
-                var runCode = new Promise(function (resolve, reject) {
-                    try {
-                        var result = eval(code);
-                    } catch (e) {
-                        if ((e instanceof ReferenceError) ||
-                                (e instanceof SyntaxError) ||
-                                (e instanceof TypeError)) {
-                            alert(e.constructor.name +
-                                    (e.lineNumber ? " on line " + e.lineNumber : "") +
-                                    ": " + e.message);
-                        } else {
-                            throw(e);
+            if (sparqlSelect) {
+                var sourceURI = sourceURI + "&format=json";
+                $.get(sourceURI, function( sparqlResult ) {
+                    var code = codeEditorCM.getValue();
+                    var codeToRun = "var g = " + JSON.stringify(sparqlResult) + ";\n" + code;
+                    console.log(codeToRun)
+                    var runCode = new Promise(function (resolve, reject) {
+                        try {
+                            var result = eval(codeToRun);
+                        } catch (e) {
+                            if ((e instanceof ReferenceError) ||
+                                    (e instanceof SyntaxError) ||
+                                    (e instanceof TypeError)) {
+                                alert(e.constructor.name +
+                                        (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                        ": " + e.message);
+                            } else {
+                                throw(e);
+                            }
                         }
-                    }
-                    //if code result in undefined it will immediately be resolves
-                    //if it returns a promise it will follow that promise
-                    resolve(result);
+                        //if code result in undefined it will immediately be resolves
+                        //if it returns a promise it will follow that promise
+                        resolve(result);
+                    });
+                    runCode.then(function () {});
                 });
-                runCode.then(function () {
-                    var resource = rdf.createNamedNode($("#rendering-resource").val());
-                    var matchersTurtle = matchersEditorCM.getValue();
-                    if (matchersTurtle.length > 0) {
-                        turtleParser.parse(matchersTurtle).then(function (matchers) {
-                            var renderingResult = new RDF2h(matchers).render(
-                                    g, resource);
-                            $("#result").html(renderingResult);
+            } else {
+                var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
+                var store = new LdpStore({
+                    parsers: new LdpStore.ParserUtil({
+                        'text/turtle': turtleParser,
+                        //'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
+                        'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
+                    })
+                });
+                var getData = function () {
+                    if ($('#rdfSource-uri').is(":visible") || $('#rdfSource-sparql').is(":visible")) {
+                        return store.match(
+                                null,
+                                null,
+                                null,
+                                sourceURI).catch(
+                                function (error) {
+                                    console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
+                                });
+
+                    } else {
+                        var turtle = rdfDataEditorCM.getValue();
+                        return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
+                            console.log(e);
+                            alert("Could not parse Turtle: " + e.constructor.name);
+                            throw "Parsing failed";
                         });
                     }
+                };
+                getData().then(function (g) {
+                    var code = codeEditorCM.getValue();
+                    var runCode = new Promise(function (resolve, reject) {
+                        try {
+                            var result = eval(code);
+                        } catch (e) {
+                            if ((e instanceof ReferenceError) ||
+                                    (e instanceof SyntaxError) ||
+                                    (e instanceof TypeError)) {
+                                alert(e.constructor.name +
+                                        (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                        ": " + e.message);
+                            } else {
+                                throw(e);
+                            }
+                        }
+                        //if code result in undefined it will immediately be resolves
+                        //if it returns a promise it will follow that promise
+                        resolve(result);
+                    });
+                    runCode.then(function () {
+                        var resource = rdf.createNamedNode($("#rendering-resource").val());
+                        var matchersTurtle = matchersEditorCM.getValue();
+                        if (matchersTurtle.length > 0) {
+                            turtleParser.parse(matchersTurtle).then(function (matchers) {
+                                var renderingResult = new RDF2h(matchers).render(
+                                        g, resource);
+                                $("#result").html(renderingResult);
+                            });
+                        }
+                    });
                 });
-            });
+            }
         };
         $("#run").on("click", run);
 

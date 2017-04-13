@@ -11,24 +11,27 @@
 @prefix schema: <http://schema.org/>.
 
 <> a lodide:Exercise;
-    lodide:intro "<h2>Italian films in DBpedia</h2>\n            <p>In this example you see how to write a SPARQL query to get film titles from DBpedia.</p>";
+    lodide:intro "<h2>Film titles in DBpedia</h2>\n            <p>In this example you see how to write a SPARQL query to get film titles from DBpedia.</p>";
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
     lodide:dataSource [
         lodide:taskSolutionType lodide:sparqlSource;
-        lodide:taskDescription """Write a SPARQL query CONSTRUCT to display ten film titles produced in Italy, using DBpedia SPARQL endpoint.""";
+        lodide:taskDescription """Write a SPARQL query to select ten film titles, using DBpedia SPARQL endpoint (http://dbpedia.org/sparql).<br/><br/>
+                                  <ol><li>First you need to find all the films, so the entities with <code>rdfs:type</code> (&lt;http://www.w3.org/2000/01/rdf-schema#type&gt;) equals to <code>&lt;http://dbpedia.org/ontology/Film&gt</code>.<br/>
+                                  <li>Second you need to SELECT for each film its <code>rdfs:label</code> (&lt;http://www.w3.org/2000/01/rdf-schema#label&gt;).</br>
+                                  <li>Then you may want to FILTER the labels getting only English ones. This come for free: <code>FILTER (lang(?label) = 'en')</code>.
+                                  <li>Finally you can LIMIT your query to 10 to reduce the number of results.</ol>""";
         lodide:taskSolutionResource "http://dbpedia.org/sparql";
         lodide:taskSolutionCode """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-CONSTRUCT { ?movie rdfs:label ?label }
+SELECT ?label
 WHERE {
   ?movie a <http://dbpedia.org/ontology/Film> .
-  ?movie <http://dbpedia.org/ontology/country> <http://dbpedia.org/resource/Italy> .
   ?movie rdfs:label ?label .
   FILTER (lang(?label) = 'en')
 } LIMIT 10""";
     ].
 <> lodide:dataProcessing [
     lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea.
-                              The code read the triples from the CONSTRUCT SPARQL query, and print an array of titles.""";
-    lodide:taskSolutionCodeCurrent "var triples = g.toArray();\nvar labels = [];\nfor (k in triples) {\n    labels.push(triples[k].object);\n}\nalert(labels);"
+                              The code read the triples from the JSON obtained via SPARQL query, and print an array of titles.""";
+    lodide:taskSolutionCodeCurrent "var res = g.results.bindings;\nvar labels = [];\nfor (k in res) {\n    labels.push(res[k].label.value);\n}\nalert(labels);"
 ].
