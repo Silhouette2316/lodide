@@ -16,7 +16,7 @@
     lodide:dataSource [
         lodide:taskSolutionType lodide:sparqlSource;
         lodide:taskDescription """Write a SPARQL query to select ten film titles, using DBpedia SPARQL endpoint (http://dbpedia.org/sparql).<br/><br/>
-                                  <ol><li>First you need to find all the films, so the entities with <code>rdfs:type</code> (&lt;http://www.w3.org/2000/01/rdf-schema#type&gt;) equals to <code>&lt;http://dbpedia.org/ontology/Film&gt</code>.<br/>
+                                  <ol><li>First you need to find all the films, so the entities with <code>rdf:type</code> (&lt;http://www.w3.org/2000/01/rdf-schema#type&gt;) equals to <code>&lt;http://dbpedia.org/ontology/Film&gt</code>.<br/>
                                   <li>Second you need to SELECT for each film its <code>rdfs:label</code> (&lt;http://www.w3.org/2000/01/rdf-schema#label&gt;).</br>
                                   <li>Then you may want to FILTER the labels getting only English ones. This come for free: <code>FILTER (lang(?label) = 'en')</code>.
                                   <li>Finally you can LIMIT your query to 10 to reduce the number of results.</ol>""";
