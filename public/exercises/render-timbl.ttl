@@ -8,20 +8,21 @@ You will access the FOAF profile of Tim Berners-Lee transform it to use properti
     lodide:finalWords """<ul>
                     <li>When you're finished press the "Run my code"-button.
                     The results will show up below the button.
-                    If you did everything right you should see at least Tim 
+                    If you did everything right you should see at least Tim
                     Berner's Lee first name.</li>
                 </ul>""";
-    lodide:dataSource [    
+    lodide:dataSource [
         lodide:taskDescription """<ul>
-                    <li>As data source specify Tim Berner-Lee's personal profile 
+                    <li>As data source specify Tim Berner-Lee's personal profile
                         document available at <code>https://www.w3.org/People/Berners-Lee/card.rdf</code></li>
                 </ul>""";
+        lodide:taskSolutionType lodide:resourceSource;
         lodide:taskSolutionResource <https://www.w3.org/People/Berners-Lee/card.rdf>
                 ];
-    lodide:dataProcessing [    
+    lodide:dataProcessing [
         lodide:taskDescription """<ul>
-                    <li>Tim Berner-Lee's profile uses the FOAF ontology, write 
-                        some code to replace FOAF terms with the corresponding 
+                    <li>Tim Berner-Lee's profile uses the FOAF ontology, write
+                        some code to replace FOAF terms with the corresponding
                         terms from schema.org.</li>
                     <li>Replace at least the following:
                         <ul>
@@ -31,7 +32,7 @@ You will access the FOAF profile of Tim Berners-Lee transform it to use properti
                     </li>
                     <li>You'll probably need the following functions:
                         <ul>
-                            <li><code>forEach(callback)</code> of the 
+                            <li><code>forEach(callback)</code> of the
                                 <code>Graph</code> instance (i.e. the object <code>g</code>)
                                 to access the individual triples,
                                 the <code>callback</code> is a function that gets
@@ -43,15 +44,15 @@ You will access the FOAF profile of Tim Berners-Lee transform it to use properti
                                     <li><code>object</code></li>
                                 </ul>
                             </li>
-                            <li><code>remove(triple)</code>: to remove a triple 
+                            <li><code>remove(triple)</code>: to remove a triple
                                 from  a graph.</li>
-                            <li><code>createTriple(subject, predicate, object)</code>: 
+                            <li><code>createTriple(subject, predicate, object)</code>:
                                 this is a method of the global <code>rdf</code>
                                 object and is needed to create a <code>Triple</code>.</li>
-                            <li><code>createNamedNode(string)</code>: 
+                            <li><code>createNamedNode(string)</code>:
                                 this is also a method of the global <code>rdf</code>
                                 object and is used to create a <em>named node</em>
-                                from the String representation a given 
+                                from the String representation a given
                                 <em>IRI</em> (URI or URL).</li>
                             <li><code>equals(other)</code>: This method is used
                                 to check if two objects represent the same node.</li>
@@ -86,10 +87,10 @@ var schemaGivenName = rdf.createNamedNode(
 replacePredicate(foafGivenName, schemaGivenName);"""
                 ];
 
-    lodide:dataRendering [    
+    lodide:dataRendering [
         lodide:taskDescription """<ul>
                 <li>Render the resource <code>https://www.w3.org/People/Berners-Lee/card#i</code></li>
-                <li>You may use the RDF2h matchers from the 
+                <li>You may use the RDF2h matchers from the
                     <a href="http://rdf2h.github.io/rdf2h/index.html#bernadette-sample">Bernadette example</a>
                     from the <a href="http://rdf2h.github.io/rdf2h/manual.html">RDF2h documentation</a>.
                </li>
@@ -107,7 +108,7 @@ replacePredicate(foafGivenName, schemaGivenName);"""
     r2h:predicate rdf:type;
     r2h:object s:Person
   ];
-  r2h:template [ 
+  r2h:template [
     r2h:context r2h:Default;
     r2h:mustache '''
 <h1>{{s:givenName}} {{s:additionalName}} {{s:familyName}}</h1>
@@ -120,13 +121,12 @@ replacePredicate(foafGivenName, schemaGivenName);"""
     {{/+s:givenName}}
     {{^+s:givenName}}
     <li>{{.}}</li>
-    {{/+s:givenName}}                            
-  {{/s:knows}}                             
-  </ul>                         
-{{/+s:knows}} 
+    {{/+s:givenName}}
+  {{/s:knows}}
+  </ul>
+{{/+s:knows}}
     '''
   ]
 ].
 """
                 ].
-

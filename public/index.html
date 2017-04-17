@@ -23,17 +23,17 @@
         <script src="//unpkg.com/github-api@v2.2.0/dist/GitHub.bundle.min.js"></script>
 
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
-              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
               crossorigin="anonymous">
 
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
-              integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+              integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
               crossorigin="anonymous">
 
         <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
                 integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
 
@@ -65,16 +65,16 @@
                                 <label for="userName">Username:</label><input type="text" id="userName" /><br />
                                 <label for="password">Password:</label><input type="password" id="password" /><br />
                                 <button id="passwordLoginButton" type="button" class="btn btn-default">Login</button><br />
-                                Assuming nobody tampered with the scripts of this page, your 
-                                browser will send these credentials exclusively to GitHub 
-                                servers, if you feel uncorfortable you can login with a 
+                                Assuming nobody tampered with the scripts of this page, your
+                                browser will send these credentials exclusively to GitHub
+                                servers, if you feel uncorfortable you can login with a
                                 <i>Personal Access Token</i> instead.
                             </div>
                             <div id="personalAccessTokenLogin" class="tab-pane fade">
-                                You can generate a new personal access token on 
-                                <a href="https://github.com/settings/tokens">
+                                You can generate a new personal access token on
+                                <a href="https://github.com/settings/tokens" target="_blank">
                                     https://github.com/settings/tokens
-                                </a>.<br />
+                                </a>, make sure the token has the public_repo scope to Access public repositories.<br />
                                 <label for="personalAccessToken">Personal Access Token:</label><input type="text" id="personalAccessToken" /><br />
                                 <label for="saveCredentialForLater">Save for later:</label><input type=checkbox id="saveCredentialForLater" /><br />
                                 <button id="personalAccessTokenLoginButton" type="button" class="btn btn-default">Login</button><br />
@@ -114,14 +114,14 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" 
+                    <button type="button" class="navbar-toggle collapsed"
                             data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <span class="navbar-brand"><a  href="http://edulod.github.io/"> <img id="logo" src="images/edulod-square.png" 
+                    <span class="navbar-brand"><a  href="http://edulod.github.io/"> <img id="logo" src="images/edulod-square.png"
                                                                                          alt="EDULOD Logo" with="20" height="20">
                             EDULOD </a>LodIDE: Use Linked Open data!
                     </span>

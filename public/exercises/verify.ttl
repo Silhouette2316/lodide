@@ -14,10 +14,10 @@
     lodide:intro "<h2>Verify a statement</h2>\n            <p>In this exercise you write a triple that is then verified against information on the web.</p>";
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
     lodide:dataSource [
-        lodide:taskDescription """Write a true graph containing a single triple, 
-            use the 
+        lodide:taskDescription """Write a true graph containing a single triple,
+            use the
             <a href="https://www.w3.org/TR/turtle/">Turtle</a> syntax or
-            its subset 
+            its subset
             <a href="https://www.w3.org/TR/n-triples/">N-Triples</a>.<br/><br/>
             Create the triple using (3 of) the following resource URIs:
             <ul>
@@ -28,10 +28,11 @@
                 <li>http://dbpedia.org/resource/Paul_McCartney</li>
             </ul>
             Note that there are several solutions.""";
+        lodide:taskSolutionType lodide:codeSource;
         lodide:taskSolutionCode "<http://www.w3.org/2000/01/rdf-schema#Class> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class>."
     ].
 <> lodide:dataProcessing [
-    lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea. The code loads RDF data using the URI of the subject and 
+    lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea. The code loads RDF data using the URI of the subject and
                                 checks if it finds the triple provided above in this graph.""";
     lodide:taskSolutionCodeCurrent "var triples = g.toArray();\nif (triples.length != 1) {\n\talert(\"Input graph must be exactly one triple\");\n    throw \"wrong size\";\n}\nvar triple = triples[0];\nvar subject = triple.subject;\nvar baseURI = subject.toString().split(\"#\")[0];\nstore.match(null,null,null,baseURI).then(function(subjectDescriptionGraph) {\n  var found = false;\n  if(subjectDescriptionGraph.length === 0) {\n  \talert(\"Failure: Got 0 triples from \"+baseURI+\". Probably CORS is not enabled for that resource.\");\n  } else {\n    subjectDescriptionGraph.forEach(function(t) {\n      if ((t.subject.equals(triple.subject)) \n          && (t.predicate.equals(triple.predicate))\n          && (t.object.equals(triple.object))) {\n              found = true;\n          }\n    });\n    if (found) {\n      alert(\"Your statement is true based on information found on \"+baseURI);\n    } else {\n      alert(\"Sorry, we couln't confirm your statement!\");\n    }\n  }\n});\n"
 ].

@@ -30,10 +30,10 @@ $(function () {
     LD2h.expand().then(function () {
 
 
-        var sourceUriValue = $("#sourceURI").val();
+        /*var sourceUriValue = $("#sourceURI").val();
         if (sourceUriValue && (sourceUriValue.trim().length > 0)) {
             setRdfSourceType("uri");
-        }
+        }*/
 
         var codeEditorValue = ampDecode($("#codeEditor").html());
         $("#codeEditor").html("");
@@ -52,79 +52,124 @@ $(function () {
             matchersEditorCM.setValue(matchersEditorValue);
         }
         var run = function () {
-            var sourceURI = $("#sourceURI").val();
-            var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
-            var store = new LdpStore({
-                parsers: new LdpStore.ParserUtil({
-                    'text/turtle': turtleParser,
-                    //'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
-                    'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
-                })
-            });
-            var getData = function () {
-                if ($('#rdfSource-uri').is(":visible")) {
-                    return store.match(
-                            null,
-                            null,
-                            null,
-                            sourceURI).catch(
-                            function (error) {
-                                console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
-                            });
-
-                } else {
-                    var turtle = rdfDataEditorCM.getValue();
-                    return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
-                        console.log(e);
-                        alert("Could not parse Turtle: " + e.constructor.name);
-                        throw "Parsing failed";
-                    });
+            var sparqlSelect = false;
+            if ($("#sourceURI").val() !== "") {
+                var sourceURI = $("#sourceURI").val();
+            } else {
+                var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
+                if (query.toUpperCase().includes("SELECT")) { //XXX not very strong!
+                    sparqlSelect = true;
                 }
-            };
-            getData().then(function (g) {
-                var code = codeEditorCM.getValue();
-                var runCode = new Promise(function (resolve, reject) {
-                    try {
-                        var result = eval(code);
-                    } catch (e) {
-                        if ((e instanceof ReferenceError) ||
-                                (e instanceof SyntaxError) ||
-                                (e instanceof TypeError)) {
-                            alert(e.constructor.name +
-                                    (e.lineNumber ? " on line " + e.lineNumber : "") +
-                                    ": " + e.message);
-                        } else {
-                            throw(e);
+                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent(query) + "&format=auto";
+            }
+
+            if (sparqlSelect) {
+                var sourceURI = sourceURI + "&format=json";
+                $.get(sourceURI, function( sparqlResult ) {
+                    var code = codeEditorCM.getValue();
+                    var codeToRun = "var g = " + JSON.stringify(sparqlResult) + ";\n" + code;
+                    console.log(codeToRun)
+                    var runCode = new Promise(function (resolve, reject) {
+                        try {
+                            var result = eval(codeToRun);
+                        } catch (e) {
+                            if ((e instanceof ReferenceError) ||
+                                    (e instanceof SyntaxError) ||
+                                    (e instanceof TypeError)) {
+                                alert(e.constructor.name +
+                                        (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                        ": " + e.message);
+                            } else {
+                                throw(e);
+                            }
                         }
-                    }
-                    //if code result in undefined it will immediately be resolves 
-                    //if it returns a promise it will follow that promise
-                    resolve(result);
+                        //if code result in undefined it will immediately be resolves
+                        //if it returns a promise it will follow that promise
+                        resolve(result);
+                    });
+                    runCode.then(function () {});
                 });
-                runCode.then(function () {
-                    var resource = rdf.createNamedNode($("#rendering-resource").val());
-                    var matchersTurtle = matchersEditorCM.getValue();
-                    if (matchersTurtle.length > 0) {
-                        turtleParser.parse(matchersTurtle).then(function (matchers) {
-                            var renderingResult = new RDF2h(matchers).render(
-                                    g, resource);
-                            $("#result").html(renderingResult);
+            } else {
+                var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
+                var store = new LdpStore({
+                    parsers: new LdpStore.ParserUtil({
+                        'text/turtle': turtleParser,
+                        //'application/ld+json': LdpStore.parsers.findParsers("application/ld+json")[0],
+                        'application/rdf+xml': LdpStore.parsers.findParsers("application/rdf+xml")[0]
+                    })
+                });
+                var getData = function () {
+                    if ($('#rdfSource-uri').is(":visible") || $('#rdfSource-sparql').is(":visible")) {
+                        return store.match(
+                                null,
+                                null,
+                                null,
+                                sourceURI).catch(
+                                function (error) {
+                                    console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
+                                });
+
+                    } else {
+                        var turtle = rdfDataEditorCM.getValue();
+                        return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
+                            console.log(e);
+                            alert("Could not parse Turtle: " + e.constructor.name);
+                            throw "Parsing failed";
                         });
                     }
+                };
+                getData().then(function (g) {
+                    var code = codeEditorCM.getValue();
+                    var runCode = new Promise(function (resolve, reject) {
+                        try {
+                            var result = eval(code);
+                        } catch (e) {
+                            if ((e instanceof ReferenceError) ||
+                                    (e instanceof SyntaxError) ||
+                                    (e instanceof TypeError)) {
+                                alert(e.constructor.name +
+                                        (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                        ": " + e.message);
+                            } else {
+                                throw(e);
+                            }
+                        }
+                        //if code result in undefined it will immediately be resolves
+                        //if it returns a promise it will follow that promise
+                        resolve(result);
+                    });
+                    runCode.then(function () {
+                        var resource = rdf.createNamedNode($("#rendering-resource").val());
+                        var matchersTurtle = matchersEditorCM.getValue();
+                        if (matchersTurtle.length > 0) {
+                            turtleParser.parse(matchersTurtle).then(function (matchers) {
+                                var renderingResult = new RDF2h(matchers).render(
+                                        g, resource);
+                                $("#result").html(renderingResult);
+                            });
+                        }
+                    });
                 });
-            });
+            }
         };
         $("#run").on("click", run);
 
         $(".source-solution-button").on("click", function () {
-            if ($("#sourceURI-solution").length > 0) {
+            var type = $("#sourceType-solution").val();
+            if (type === "http://ontology.lodide.io/resourceSource") {
                 if (confirm("Confirm that you are you too lazy to copy and paste that URI.")) {
                     $("#sourceURI").val($("#sourceURI-solution").text().trim());
-                    setRdfSourceType("uri")
+                    setRdfSourceType("uri");
                 }
-            } else {
+            }
+            if (type === "http://ontology.lodide.io/codeSource") {
+                rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
                 setRdfSourceType("directInput");
-                rdfDataEditorCM.setValue($("#sourceEditor-solution").text().trim());
+            }
+            if (type === "http://ontology.lodide.io/sparqlSource") {
+                setRdfSourceType("sparql"); //MUST BE FIRST SO NOT TO OVERRIDE SOLUTION BOX
+                $("#endpointURL").val($("#sourceURI-solution").text().trim());
+                sparqlEditorCM.setValue($("#sourceEditor-solution").val().trim());
             }
         });
         $("#codeEditor-solution-button").on("click", function () {
@@ -133,7 +178,7 @@ $(function () {
                 message += "\nWARNING: The code that you've already entered will be gone forever.";
             }
             if (confirm(message)) {
-                codeEditorCM.setValue($("#codeEditor-solution").text().trim());
+                codeEditorCM.setValue($("#codeEditor-solution").val().trim());
             }
         });
         $("#rendering-solution-button").on("click", function () {
@@ -143,15 +188,13 @@ $(function () {
             }
             if (confirm(message)) {
                 $("#rendering-resource").val($("#rendering-resource-solution").text().trim());
-                matchersEditorCM.setValue($("#matchersEditor-solution").text().trim());
+                matchersEditorCM.setValue($("#matchersEditor-solution").val().trim());
             }
         });
 
 
 
         updateLogginStatus();
-
-
 
 
         function updateLogginStatus() {
@@ -165,18 +208,29 @@ $(function () {
                 });
                 var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
                 repo.getTree("master").then(function (r) {
-                    var tree = r.data.tree
-                    //for (var i = 0; i < tree.length;i++) {
-                    //    var e = tree[i];
-                    tree.forEach(function (e) {
-                        console.log(e);
-                        repo.getContents('master', e.path, 'raw').then(function (response) {
-                            console.log("Contents of: " + e.path);
-                            console.log(response.data);
-                        });
-                    });
+                    console.log("successful access to your repo");
                 }).catch(function (e) {
-                    alert("e: " + e);
+                    console.log("failed to access repo contents, will attempt to create repo");
+                    console.log(e);
+                    //create new repository
+                    gh.getUser().createRepo({
+                        "name": "lodide-saved-contents",
+                        "description": "A repository for saving http://lodide.io/ projects.",
+                        "homepage": "http://lodide.io/",
+                        "private": false,
+                        "has_issues": false,
+                        "has_wiki": false,
+                        "has_downloads": false
+                    }).then(writeReadme)
+                        .catch(function (a) {
+                            alert("error: " + a)
+                        });
+                    function writeReadme() {
+                        repo.writeFile('master', "README.md", "# LodIDE\nThis repository collects all your saved work from [LodIDE](http://lodide.io).",
+                                "Autogenerated README", {}).then(function (r) {
+                            console.log(r);
+                        });
+                    }
                 });
             } else {
                 $('.authenticatedOnly').hide();
@@ -231,7 +285,7 @@ $(function () {
             }
             var repo = gh.getRepo(profile.login, 'lodide-saved-contents');
             repo.listBranches().then(writeFile).catch(function (e) {
-                console.log("failed to write file, will attempt to create repo");
+                alert("failed to write file, did you delete the repo? Will attempt to create repo.");
                 console.log(e);
                 //create new repository
                 gh.getUser().createRepo({
@@ -273,12 +327,17 @@ $(function () {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskDescription"),
                             rdf.createLiteral($("#dataSource-taskDescription").html())));
                 }
-
-                g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"),
-                        rdf.createNamedNode($("#sourceURI-solution").html())));
+                if ($("#sourceURI-solution").html()) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResource"),
+                            rdf.createNamedNode($("#sourceURI-solution").html())));
+                }
                 if ($('#rdfSource-uri').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#sourceURI").val())));
+                }
+                if ($("#sourceEditor-solution").val()) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCode"),
+                            rdf.createLiteral($("#sourceEditor-solution").val())));
                 }
                 if ($('#rdfSource-directInput').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
@@ -290,8 +349,10 @@ $(function () {
                     g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskDescription"),
                             rdf.createLiteral($("#dataProcessing-taskDescription").html())));
                 }
+                if ($("#codeEditor-solution").val().length > 0) {
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCode"),
-                        rdf.createLiteral($("#codeEditor-solution").html())));
+                        rdf.createLiteral($("#codeEditor-solution").val())));
+                }
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCodeCurrent"),
                         rdf.createLiteral(codeEditorCM.getValue())));
                 if ($("#dataRenderingTitle").length > 0) {
@@ -302,7 +363,7 @@ $(function () {
                                 rdf.createLiteral($("#dataRendering-taskDescription").html())));
                     }
                     g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCode"),
-                            rdf.createLiteral($("#matchersEditor-solution").html())));
+                            rdf.createLiteral($("#matchersEditor-solution").val())));
                     g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionCodeCurrent"),
                             rdf.createLiteral(matchersEditorCM.getValue())));
                     g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResource"),
@@ -355,5 +416,3 @@ $(function () {
     });
 
 });
-
-

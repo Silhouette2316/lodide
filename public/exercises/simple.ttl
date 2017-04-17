@@ -14,22 +14,23 @@
     lodide:intro "<h2>Write an RDF Graph</h2>\n            <p>In this exercise you write a simple graph with two statements (triples).</p>";
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your graph.</li>\n                </ul>";
     lodide:dataSource [
-        lodide:taskDescription """<div>The simples way to write an RDF Graph is by 
-                using the <a href="https://www.w3.org/TR/n-triples/">N-Triples</a> 
+        lodide:taskDescription """<div>The simples way to write an RDF Graph is by
+                using the <a href="https://www.w3.org/TR/n-triples/">N-Triples</a>
                 syntax. In N-Triples every triple, i.e. every edge of the graph,
-                is serialized by a line terminated by a dot (<code>.</code>). 
+                is serialized by a line terminated by a dot (<code>.</code>).
                 The elements of a triple (subject, predicate and object) are separated
-                by spaces, URIs are enclosed by '<code>&lt;</code>' and '<code>></code>', literals by double 
+                by spaces, URIs are enclosed by '<code>&lt;</code>' and '<code>></code>', literals by double
                 quotes (<code>"</code>).
                 </div>
                 <div>
                 Write a graph (choose "Direct RDF Input") that states that:<ul>
                     <li>The resource with the URI <code>http://example.org/alice</code> is of type <code>http://xmlns.com/foaf/0.1/Person</code></li>
                     <li>The resource has the given name (<code>http://xmlns.com/foaf/0.1/givenName</code>) "Alice"</li>
-                </ul> 
+                </ul>
                 Note: in RDF the type is indicate using the property <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</code>.
             </div>
             """;
+        lodide:taskSolutionType lodide:codeSource;
         lodide:taskSolutionCode """<http://example.org/alice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.
 <http://example.org/alice> <http://xmlns.com/foaf/0.1/givenName> "Alice"."""
     ].

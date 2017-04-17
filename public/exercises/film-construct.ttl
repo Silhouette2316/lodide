@@ -1,0 +1,37 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdfa: <http://www.w3.org/ns/rdfa#>.
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix r2h: <http://rdf2h.github.io/2015/rdf2h#>.
+@prefix s: <http://schema.org/>.
+@prefix lodide: <http://ontology.lodide.io/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix schema: <http://schema.org/>.
+
+<> a lodide:Exercise;
+    lodide:intro "<h2>Film titles in DBpedia</h2>\n            <p>In this example you see how to write a SPARQL CONSTRUCT query to get film titles from DBpedia.</p>";
+    lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
+    lodide:dataSource [
+        lodide:taskSolutionType lodide:sparqlSource;
+        lodide:taskDescription """Write a SPARQL query CONSTRUCT to create an RDF graph with ten film titles, using the DBpedia SPARQL endpoint.<br/>
+                                  This exercise is very similar to <a href='/?exercise=http://lodide.io/exercises/film.ttl'>the SPARQL select exercise</a>.
+                                  Using the same WHERE condition, you need to replace the SELECT with a <a href="https://www.w3.org/TR/rdf-sparql-query/#construct">CONSTRUCT</a>.<br/><br/>
+                                  For this exercise you need to create ten triples, one for each film, that have the movie as subject, <code>rdfs:label</code> as predicate, and its
+                                  label as object.""";
+        lodide:taskSolutionResource "http://dbpedia.org/sparql";
+        lodide:taskSolutionCode """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+CONSTRUCT { ?movie rdfs:label ?label }
+WHERE {
+  ?movie a <http://dbpedia.org/ontology/Film> .
+  ?movie rdfs:label ?label .
+  FILTER (lang(?label) = 'en')
+} LIMIT 10""";
+    ].
+<> lodide:dataProcessing [
+    lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea.
+                              The code read the triples from the CONSTRUCT SPARQL query, and print an array of titles.""";
+    lodide:taskSolutionCodeCurrent "var triples = g.toArray();\nvar labels = [];\nfor (k in triples) {\n    labels.push(triples[k].object);\n}\nalert(labels);"
+].
