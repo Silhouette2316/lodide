@@ -164,8 +164,8 @@ $(function () {
                 }
             }
             if (type === "http://ontology.lodide.io/codeSource") {
-                rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
                 setRdfSourceType("directInput");
+                rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
             }
             if (type === "http://ontology.lodide.io/sparqlSource") {
                 setRdfSourceType("sparql"); //MUST BE FIRST SO NOT TO OVERRIDE SOLUTION BOX
