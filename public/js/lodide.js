@@ -55,7 +55,7 @@ $(function () {
             var sparqlSelect = false;
             if ($("#sourceURI").val() !== "") {
                 var sourceURI = $("#sourceURI").val();
-            } else {
+            } else if (sparqlEditorCM.getValue() || $("#queryForEndpoint").val()) {
                 var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
                 if (query.toUpperCase().includes("SELECT")) { //XXX not very strong!
                     sparqlSelect = true;
