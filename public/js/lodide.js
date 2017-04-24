@@ -88,7 +88,8 @@ $(function () {
                         resolve(result);
                     });
                     runCode.then(function () {});
-                });
+                })
+                .error(function() { alert("Error occurred with SPARQL query. Check the syntax of your query or the endpoint URL."); });
             } else {
                 var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
                 var store = new LdpStore({
