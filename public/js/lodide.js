@@ -67,8 +67,7 @@ $(function () {
                 var sourceURI = sourceURI + "&format=json";
                 $.get(sourceURI, function( sparqlResult ) {
                     var code = codeEditorCM.getValue();
-                    var codeToRun = "var g = " + JSON.stringify(sparqlResult) + ";\n" + code;
-                    console.log(codeToRun)
+                    var codeToRun = "var j = " + JSON.stringify(sparqlResult) + ";\n" + code;
                     var runCode = new Promise(function (resolve, reject) {
                         try {
                             var result = eval(codeToRun);

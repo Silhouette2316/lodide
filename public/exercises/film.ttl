@@ -33,6 +33,6 @@ WHERE {
     ].
 <> lodide:dataProcessing [
     lodide:taskDescription """In this exercise nothing needs to be done here. But studying the code below isn't a bad idea.
-                              The code read the triples from the JSON obtained via SPARQL query, and print an array of titles.""";
-    lodide:taskSolutionCodeCurrent "var res = g.results.bindings;\nvar labels = [];\nfor (k in res) {\n    labels.push(res[k].label.value);\n}\nalert(labels);"
+                              The code read the triples from the JSON <code>j</code> obtained via SPARQL query, and print an array of titles.""";
+    lodide:taskSolutionCodeCurrent "var res = j.results.bindings;\nvar labels = [];\nfor (k in res) {\n    labels.push(res[k].label.value);\n}\nalert(labels);"
 ].
