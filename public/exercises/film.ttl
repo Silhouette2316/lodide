@@ -19,7 +19,8 @@
                                   <ol><li>First you need to find all the films, so the entities with <code>rdfs:type</code> (&lt;http://www.w3.org/2000/01/rdf-schema#type&gt;) equals to <code>&lt;http://dbpedia.org/ontology/Film&gt</code>.<br/>
                                   <li>Second you need to SELECT for each film its <code>rdfs:label</code> (&lt;http://www.w3.org/2000/01/rdf-schema#label&gt;).</br>
                                   <li>Then you may want to FILTER the labels getting only English ones. This come for free: <code>FILTER (lang(?label) = 'en')</code>.
-                                  <li>Finally you can LIMIT your query to 10 to reduce the number of results.</ol>""";
+                                  <li>Finally you can LIMIT your query to 10 to reduce the number of results.</ol>
+                                  For additional help, check out "<a href='https://vimeo.com/57684537'>Chapter 1 Webinar Clip: SPARQL querying</a>" from EUCLID project on Vimeo.""";
         lodide:taskSolutionResource "http://dbpedia.org/sparql";
         lodide:taskSolutionCode """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
