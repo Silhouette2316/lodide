@@ -20,7 +20,7 @@
         schema:description "Your first SPARQL query"
     ]
     [
-        lodide:exercise <exercises/film.ttl>;
+        lodide:exercise <exercises/film-construct.ttl>;
         schema:description "Your first SPARQL CONSTRUCT query"
     ]
     [

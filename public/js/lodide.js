@@ -55,7 +55,7 @@ $(function () {
             var sparqlSelect = false;
             if ($("#sourceURI").val() !== "") {
                 var sourceURI = $("#sourceURI").val();
-            } else {
+            } else if (sparqlEditorCM.getValue() || $("#queryForEndpoint").val()) {
                 var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
                 if (query.toUpperCase().includes("SELECT")) { //XXX not very strong!
                     sparqlSelect = true;
@@ -67,8 +67,7 @@ $(function () {
                 var sourceURI = sourceURI + "&format=json";
                 $.get(sourceURI, function( sparqlResult ) {
                     var code = codeEditorCM.getValue();
-                    var codeToRun = "var g = " + JSON.stringify(sparqlResult) + ";\n" + code;
-                    console.log(codeToRun)
+                    var codeToRun = "var j = " + JSON.stringify(sparqlResult) + ";\n" + code;
                     var runCode = new Promise(function (resolve, reject) {
                         try {
                             var result = eval(codeToRun);
@@ -88,7 +87,8 @@ $(function () {
                         resolve(result);
                     });
                     runCode.then(function () {});
-                });
+                })
+                .error(function() { alert("Error occurred with SPARQL query. Check the syntax of your query or the endpoint URL."); });
             } else {
                 var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
                 var store = new LdpStore({
@@ -163,8 +163,8 @@ $(function () {
                 }
             }
             if (type === "http://ontology.lodide.io/codeSource") {
-                rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
                 setRdfSourceType("directInput");
+                rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
             }
             if (type === "http://ontology.lodide.io/sparqlSource") {
                 setRdfSourceType("sparql"); //MUST BE FIRST SO NOT TO OVERRIDE SOLUTION BOX
@@ -335,6 +335,10 @@ $(function () {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#sourceURI").val())));
                 }
+                if ($('#rdfSource-sparql').is(":visible")) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
+                            rdf.createNamedNode($("#endpointURL").val())));
+                }
                 if ($("#sourceEditor-solution").val()) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCode"),
                             rdf.createLiteral($("#sourceEditor-solution").val())));
@@ -342,6 +346,10 @@ $(function () {
                 if ($('#rdfSource-directInput').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
                             rdf.createLiteral(rdfDataEditorCM.getValue())));
+                }
+                if ($('#rdfSource-sparql').is(":visible")) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
+                            rdf.createLiteral(sparqlEditorCM.getValue())));
                 }
                 var dataProcessing = rdf.createBlankNode();
                 g.add(rdf.createTriple(exercise, lodIdeNs("dataProcessing"), dataProcessing));

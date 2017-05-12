@@ -15,11 +15,10 @@
     lodide:finalWords "<ul>\n                    <li>Press the \"Run my code\"-button to verify your triple.</li>\n                </ul>";
     lodide:dataSource [
         lodide:taskSolutionType lodide:sparqlSource;
-        lodide:taskDescription """Write a SPARQL query CONSTRUCT to create an RDF graph with ten film titles, using the DBpedia SPARQL endpoint.<br/>
-                                  This exercise is very similar to <a href='/?exercise=http://lodide.io/exercises/film.ttl'>the SPARQL select exercise</a>.
-                                  Using the same WHERE condition, you need to replace the SELECT with a <a href="https://www.w3.org/TR/rdf-sparql-query/#construct">CONSTRUCT</a>.<br/><br/>
+        lodide:taskDescription """Write a SPARQL query CONSTRUCT to create an RDF graph with ten film titles, using the DBpedia SPARQL endpoint.<br/><br/>
                                   For this exercise you need to create ten triples, one for each film, that have the movie as subject, <code>rdfs:label</code> as predicate, and its
-                                  label as object.""";
+                                  label as object. This exercise is very similar to <a href='/?exercise=http://lodide.io/exercises/film.ttl'>the SPARQL select exercise</a>.
+                                  Using the same WHERE condition, you need to replace the SELECT with a <a href="https://www.w3.org/TR/rdf-sparql-query/#construct">CONSTRUCT</a>.""";
         lodide:taskSolutionResource "http://dbpedia.org/sparql";
         lodide:taskSolutionCode """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

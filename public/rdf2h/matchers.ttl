@@ -128,7 +128,7 @@
             </div>
             {{/+lodide:taskDescription}}
             <div>
-                Act on the data available as graph object <code>g</code>;
+                Act on the data available as graph object <code>g</code> or using the JSON object <code>j</code> if you ran a SPARQL SELECT query;
             </div>
             <div id="codeEditor" class="editor">{{lodide:taskSolutionCodeCurrent}}</div>
             <textarea style="display: none" id="codeEditor-solution">{{lodide:taskSolutionCode}}</textarea>'''
