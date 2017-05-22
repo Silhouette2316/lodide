@@ -5,10 +5,17 @@ title: "EDULOD - LodIDE"
 
 
 
-LodIDE will provide an online development environment to easily get 
+LodIDE provides an online development environment to more easily get 
 started using Linked Open Data (LOD).
 
-Check it out online at [lodide.io](http://lodide.io).
+Check it out online at [lodide.io](http://lodide.io) or get the sources at
+[github.com/edulod/lodide](https://github.com/edulod/lodide).
+
+LodIDE is best used with some familiarity with JavaScript and with the basic
+concepts of Linked Data and RDF. There are many resources on the web to get 
+started programming JavaScript. The [Euclid Project](http://www.euclid-project.eu/)
+provides a free curriculum for Linked Data which is ideal to be used as complement 
+to the experimentation framework and exercises provided by LodIDE.
 
 ### EDULOD
 
