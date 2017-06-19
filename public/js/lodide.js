@@ -107,8 +107,11 @@ $(function () {
                                 sourceURI).catch(
                                 function (error) {
                                     console.warn("Couldn't get any triple from " + sourceURI + ". reason: " + error);
+                                    if ($('#rdfSource-sparql').is(":visible")) {
+                                      alert("Error occurred with SPARQL query. Check the syntax of your query or the endpoint URL.");
+                                      throw "SPARQL failed";
+                                    }
                                 });
-
                     } else {
                         var turtle = rdfDataEditorCM.getValue();
                         return turtleParser.parse(turtle, undefined, "http://example.org/").catch(function (e) {
