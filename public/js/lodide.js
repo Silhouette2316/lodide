@@ -337,10 +337,12 @@ $(function () {
                 if ($('#rdfSource-uri').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#sourceURI").val())));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("RDF-URI")));
                 }
                 if ($('#rdfSource-sparql').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createNamedNode($("#endpointURL").val())));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("SPARQL")));
                 }
                 if ($("#sourceEditor-solution").val()) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCode"),
@@ -349,6 +351,7 @@ $(function () {
                 if ($('#rdfSource-directInput').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
                             rdf.createLiteral(rdfDataEditorCM.getValue())));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("RDF-source")));
                 }
                 if ($('#rdfSource-sparql').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),

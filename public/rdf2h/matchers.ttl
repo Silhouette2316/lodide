@@ -22,6 +22,7 @@
                      '''
     ]
 ].
+
 [ a r2h:Matcher ;
         r2h:triplePattern [
         r2h:predicate lodide:dataSource;
@@ -108,6 +109,23 @@
                 if (sparqlEditorValue) {
                     sparqlEditorCM.setValue(sparqlEditorValue);
                 }
+
+                var sourceType = `{{{lodide:sourceType}}}`;
+                switch(sourceType) {
+                    case "http://ontology.lodide.io/SPARQL":
+                        setRdfSourceType("sparql");
+                        sparqlEditorCM.setValue($("#sourceEditor-solution").val().trim());
+                        break;
+                    case "http://ontology.lodide.io/RDF-URI":
+                        setRdfSourceType("uri");
+                        break;
+                    case "http://ontology.lodide.io/RDF-source":
+                        setRdfSourceType("directInput");
+                        rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
+                        break;
+                    default:
+                        //do nothing
+                }
             \u003C/script>
              '''
     ]
@@ -171,14 +189,14 @@
       r2h:mustache """<h1>LodIde</h1>
         <div>You can start <a href="./">LodIDE</a> with various exercises/examples.
 
-            The following exercises are ordered by their level of difficulty. While 
+            The following exercises are ordered by their level of difficulty. While
             the first exercises only introduce some RDF concepts, later exercise
             also require writing some JavaScript code. While the specifics are
             introduced in the description of the exercise, for those exercises
             you should have at least basic knowledge of the JavaScript syntax.
-            There are several online resources to get started with JavaScript 
+            There are several online resources to get started with JavaScript
             such as <a href="https://www.learn-js.org/">learn-js.org</a>.
-            To read about RDF concepts we recommend the resources provided by the 
+            To read about RDF concepts we recommend the resources provided by the
             <a href="http://www.euclid-project.eu/">EUCLID Project</a>.
 
             <ul>
