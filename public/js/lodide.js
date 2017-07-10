@@ -337,12 +337,12 @@ $(function () {
                 if ($('#rdfSource-uri').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#sourceURI").val())));
-                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("RDF-URI")));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("resourceSource")));
                 }
                 if ($('#rdfSource-sparql').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createNamedNode($("#endpointURL").val())));
-                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("SPARQL")));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("sparqlSource")));
                 }
                 if ($("#sourceEditor-solution").val()) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCode"),
@@ -351,7 +351,7 @@ $(function () {
                 if ($('#rdfSource-directInput').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
                             rdf.createLiteral(rdfDataEditorCM.getValue())));
-                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("RDF-source")));
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("sourceType"), lodIdeNs("codeSource")));
                 }
                 if ($('#rdfSource-sparql').is(":visible")) {
                     g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionCodeCurrent"),
@@ -366,6 +366,10 @@ $(function () {
                 if ($("#codeEditor-solution").val().length > 0) {
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCode"),
                         rdf.createLiteral($("#codeEditor-solution").val())));
+                }
+                if ($("#sourceType-solution").val() !== undefined) {
+                    g.add(rdf.createTriple(dataSource, lodIdeNs("taskSolutionType"),
+                        lodIdeNs($("#sourceType-solution").val().replace("http://ontology.lodide.io/",""))));
                 }
                 g.add(rdf.createTriple(dataProcessing, lodIdeNs("taskSolutionCodeCurrent"),
                         rdf.createLiteral(codeEditorCM.getValue())));
@@ -385,6 +389,7 @@ $(function () {
                     g.add(rdf.createTriple(dataRendering, lodIdeNs("taskSolutionResourceCurrent"),
                             rdf.createLiteral($("#rendering-resource").val())));
                 }
+
                 return rdf.serializers["text/turtle"].serialize(g).then(function (turtle) {
                     return turtle;
                 });

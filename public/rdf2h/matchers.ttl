@@ -112,14 +112,14 @@
 
                 var sourceType = `{{{lodide:sourceType}}}`;
                 switch(sourceType) {
-                    case "http://ontology.lodide.io/SPARQL":
+                    case "http://ontology.lodide.io/sparqlSource":
                         setRdfSourceType("sparql");
                         sparqlEditorCM.setValue($("#sourceEditor-solution").val().trim());
                         break;
-                    case "http://ontology.lodide.io/RDF-URI":
+                    case "http://ontology.lodide.io/resourceSource":
                         setRdfSourceType("uri");
                         break;
-                    case "http://ontology.lodide.io/RDF-source":
+                    case "http://ontology.lodide.io/codeSource":
                         setRdfSourceType("directInput");
                         rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
                         break;
