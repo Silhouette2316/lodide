@@ -53,42 +53,50 @@ $(function () {
         }
         var run = function () {
             var sparqlSelect = false;
-            if ($("#sourceURI").val() !== "") {
-                var sourceURI = $("#sourceURI").val();
-            } else if (sparqlEditorCM.getValue() || $("#queryForEndpoint").val()) {
+            if (sparqlEditorCM.getValue() || $("#queryForEndpoint").val()) {
                 var query = sparqlEditorCM.getValue() || $("#queryForEndpoint").val();
                 if (query.toUpperCase().includes("SELECT")) { //XXX not very strong!
                     sparqlSelect = true;
                 }
-                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent(query) + "&format=auto";
+                var sourceURI = $("#endpointURL").val() + "?query=" + encodeURIComponent(query);
+            } else if ($("#sourceURI").val() !== "") {
+                var sourceURI = $("#sourceURI").val();
             }
 
             if (sparqlSelect) {
-                var sourceURI = sourceURI + "&format=json";
-                $.get(sourceURI, function( sparqlResult ) {
-                    var code = codeEditorCM.getValue();
-                    var codeToRun = "var j = " + JSON.stringify(sparqlResult) + ";\n" + code;
-                    var runCode = new Promise(function (resolve, reject) {
-                        try {
-                            var result = eval(codeToRun);
-                        } catch (e) {
-                            if ((e instanceof ReferenceError) ||
-                                    (e instanceof SyntaxError) ||
-                                    (e instanceof TypeError)) {
-                                alert(e.constructor.name +
-                                        (e.lineNumber ? " on line " + e.lineNumber : "") +
-                                        ": " + e.message);
-                            } else {
-                                throw(e);
+                $.ajax({
+                    type: 'GET',
+                    url: sourceURI,
+                    crossDomain: true,
+                    headers: {"Accept": 'application/sparql-results+json'},
+                    success: function (sparqlResult) {
+                        console.log(sparqlResult)
+                        var code = codeEditorCM.getValue();
+                        var codeToRun = "var j = " + JSON.stringify(sparqlResult) + ";\n" + code;
+                        var runCode = new Promise(function (resolve, reject) {
+                            try {
+                                var result = eval(codeToRun);
+                            } catch (e) {
+                                if ((e instanceof ReferenceError) ||
+                                        (e instanceof SyntaxError) ||
+                                        (e instanceof TypeError)) {
+                                    alert(e.constructor.name +
+                                            (e.lineNumber ? " on line " + e.lineNumber : "") +
+                                            ": " + e.message);
+                                } else {
+                                    throw(e);
+                                }
                             }
-                        }
-                        //if code result in undefined it will immediately be resolves
-                        //if it returns a promise it will follow that promise
-                        resolve(result);
-                    });
-                    runCode.then(function () {});
-                })
-                .error(function() { alert("Error occurred with SPARQL query. Check the syntax of your query or the endpoint URL."); });
+                            //if code result in undefined it will immediately be resolves
+                            //if it returns a promise it will follow that promise
+                            resolve(result);
+                        });
+                        runCode.then(function () {});
+                    },
+                    error: function (error) {
+                        alert("Error occurred with SPARQL query. Check the syntax of your query or the endpoint URL.");
+                    }
+                });
             } else {
                 var turtleParser = LdpStore.parsers.findParsers("text/turtle")[0];
                 var store = new LdpStore({
