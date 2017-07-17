@@ -46,6 +46,9 @@
                 {{/lodide:taskSolutionCode}}
             </div>
             {{/+lodide:taskDescription}}
+            {{#lodide:taskSolutionCodeCurrent}}
+            <textarea id="sourceEditor-current" style="display: none">{{.}}</textarea>
+            {{/lodide:taskSolutionCodeCurrent}}
             <div id="addRdfSource">
                 <label for="selRdfSource">RDF Source:</label>
                 <select class="form-control" id="selRdfSource">
@@ -114,14 +117,14 @@
                 switch(sourceType) {
                     case "http://ontology.lodide.io/sparqlSource":
                         setRdfSourceType("sparql");
-                        sparqlEditorCM.setValue($("#sourceEditor-solution").val().trim());
+                        sparqlEditorCM.setValue($("#sourceEditor-current").val().trim());
                         break;
                     case "http://ontology.lodide.io/resourceSource":
                         setRdfSourceType("uri");
                         break;
                     case "http://ontology.lodide.io/codeSource":
                         setRdfSourceType("directInput");
-                        rdfDataEditorCM.setValue($("#sourceEditor-solution").val().trim());
+                        rdfDataEditorCM.setValue($("#sourceEditor-current").val().trim());
                         break;
                     default:
                         //do nothing
